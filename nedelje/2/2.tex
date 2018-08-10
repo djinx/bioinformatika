@@ -55,7 +55,7 @@ Funkcija ima jedan parametar, \texttt{pattern}, koji treba pretvoriti u broj. Im
 
 
 \subsubsection{Symbol To Number}
-\label{simbolToNumber}
+\label{symbolToNumber}
 
 Funckija prima jedan karakter i vraća odgovarajući broj. Broj se čita iz mape koja preslikava karaktere A, T, C, G u brojeve 0, 1, 2, 3.
 
@@ -117,7 +117,35 @@ Funkcija ima dva parametra, \texttt{text1} i \texttt{text2}. Povratna vrednost j
 
 
 
+\section{GC-Skew}
 
+Otvaramo fajl u FASTA formatu koji sadrži nukleotidnu sekvencu. Zanemarujemo prvi red datoteke. Dodatno, potrebno je da uklonimo beline, odnosno sve nove redove, kao i da pretvorimo slova iz velikih u mala. Nakon toga, računamo skew na osnovu nukleotida od milionitog do kraja (korišćenjem funkcije \texttt{calculate\_skew}). Na kraju, crtamo skew (pomoću funkcije \texttt{draw\_skew}).
+
+\lstinputlisting[language=Python, frame=single]{nedelje/2/kodovi/4.GC-Skew.py}
+
+\subsection{Calculate Skew}
+
+Funkcija ima jedan parametar, \texttt{text}, koji predstavlja nukleotidnu sekvencu za koju računamo skew. Povratna vrednost je \texttt{skew}.
+
+Skew je inicijalno niz nula, dimenzije datog teksta. Prolazimo sve karaktere teksta i u zavisnosti od nukleotida vršimo odgovarajuću akciju:
+\begin{itemize}
+	\item ako je nukleotid \texttt{G} - prethodnu vrednost uvećavamo za jedan
+	\item ako je nukleotid \texttt{C} - prethodnu vrednost smanjujemo za jedan
+	\item u ostalim slučajevima ne menjamo prethodnu vrednost.
+\end{itemize}
+
+\noindent Dobijenu vrednost smeštamo u \texttt{skew} na odgovarajuću poziciju. 
+
+\subsection{Draw Skew}
+
+Funkcija ima jedan parametar, \texttt{skew} - skew dijagram koji treba vizuelizovati. U tu svrhu, neophodno je uključiti pyplot iz biblioteke matplotlib.
+
+Vrednosti na x-osi su brojevi iz intervala $[0, len(skew)]$. Pravimo \texttt{ax} koja sadrži subplot. U njoj iscrtavamo \texttt{plot} za \texttt{x} i \texttt{skew}. Možemo označiti ose (xlabel, ylabel) i postaviti naslov, pozivom funkcije \texttt{set} nad \texttt{ax}. Takođe, možemo dodati mrežu pozivom funkcije \texttt{grid} nad \texttt{ax}. Na kraju prikazujemo dijagram, pozivom funkcije \texttt{show} iz biblioteke pyplot.
+
+
+\lstinputlisting[language=Python, frame=single]{nedelje/2/kodovi/4.1.CalculateSkew.py}
+
+\lstinputlisting[language=Python, frame=single]{nedelje/2/kodovi/4.2.DrawSkew.py}
 
 
 

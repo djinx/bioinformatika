@@ -1,4 +1,3 @@
-# Sastavljanje DNK niske pomocu k-mera
 def string_spelled_by_patterns(patterns, k):
     dna_string = patterns[0][:-1]
 

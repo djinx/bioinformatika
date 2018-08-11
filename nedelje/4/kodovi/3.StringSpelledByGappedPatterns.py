@@ -1,4 +1,3 @@
-# Sastavljanje DNK niske pomocu parova k-mera na udaljenosti d
 def string_spelled_by_gapped_patterns(gapped_patterns, k, d):
     first_patterns = [s[0] for s in gapped_patterns]
     second_patterns = [s[1] for s in gapped_patterns]

@@ -1,0 +1,163 @@
+\section{Linear Spectrum}
+\label{linearSpectrum}
+\setbookcodestyle 
+Funkcija ima tri parametra, \texttt{peptide} - peptid čiji spektar želimo da odredumo, \texttt{amino\_acid} - lista aminokiselina, i \texttt{amino\_acid\_mass} - lista celih brojeva koji predstavljaju mase aminokiselina. Povratna vrednost je linearni spektar datog peptida. 
+
+Želimo da generišemo teorijski spektar, ali pre nego što to odredimo, prvo ćemo napraviti niz prefiksnih masa. Ovaj pristup zasnovan je na pretpostavci da je masa bilo kod potpeptida jednaka razlici masa dva prefiksa. 
+
+Na početku, lista \texttt{prefix\_mass} ima samo jedan element i to 0. Dodatno, pamtimo trenutnu masu peptida u promenljivoj \texttt{current\_mass}, koja je na početku jednaka 0. Redom prolazimo sve aminokiseline u peptidu i svaku moramo pronaći u nizu aminokiselina, kako bismo dobili njenu masu. U \texttt{prefix\_mass} dodajemo novi element čija je vrednost jednaka trenutnoj masi uvečanoj za masu trenutne aminokiseline. Dodatno, uvećavamo trenutnu masu za masu trenutne aminokiseline.
+
+Sada, kada imamo prefiksne mase, možemo odrediti linearni spektar. Linearni spektar predstavljen je kao lista, i na početku ima samo jedan element - 0. Redom prolazimo sve vrednosti u listi prefiksnih masa u prvoj petlji, a u drugoj petlji prolazimo istu listu od prve sledeće pozicije. U spektar dodajemo razliku veće i manje prefikse mase. Pre nego što vratimo listu, bitno je da je sortiramo i to rastuće!
+
+
+\lstinputlisting[language=Python, frame=single]{nedelje/5/kodovi/1.LinearSpectrum.py}
+
+\section{Cyclic Spectrum}
+\label{cyclicSpectrum}
+
+Funkcija ima tri parametra, \texttt{peptide} - peptid čiji spektar želimo da odredumo, \texttt{amino\_acid} - lista aminokiselina, i \texttt{amino\_acid\_mass} - lista celih brojeva koji predstavljaju mase aminokiselina. Povratna vrednost je ciklični spektar datog peptida. 
+
+I u ovoj funkciji nam je potrebna prefiksna masa. Na početku, lista \texttt{prefix\_mass} ima samo jedan element i to 0. Dodatno, pamtimo trenutnu masu peptida u promenljivoj \texttt{current\_mass}, koja je na početku jednaka 0. Redom prolazimo sve aminokiseline u peptidu i svaku moramo pronaći u nizu aminokiselina, kako bismo dobili njenu masu. U \texttt{prefix\_mass} dodajemo novi element čija je vrednost jednaka trenutnoj masi uvečanoj za masu trenutne aminokiseline. Dodatno, uvećavamo trenutnu masu za masu trenutne aminokiseline.
+
+Nakon što smo odredili listu prefiksnih masa, određujemo peptitdnu masu. Peptidna masa jednaka je poslednjoj prefiksnoj masi i njenu vrednost čuvamo u promenljivoj \texttt{peptide\_mass}.
+
+Ciklični spektar predstavljen je kao lista, i na početku ima samo jedan element - 0. Redom prolazimo sve vrednosti u listi prefiksnih masa u prvoj petlji, a u drugoj petlji prolazimo istu listu od prve sledeće pozicije. U spektar dodajemo razliku veće i manje prefikse mase. 
+
+Razlika u odnosu na linearni spektar jeste u sledećem koraku. Ukoliko prva petlja nije u prvoj iteraciji, a druga petlja nije u poslednjoj iteraciji, onda u spektar dodajemo i vrednost peptidne mase umanjene za prethodnu razliku veće i manje prefiksne mase. I u ovom slučaju, pre nego što vratimo spektar, moramo da ga sortiramo rastuće!
+
+\lstinputlisting[language=Python, frame=single]{nedelje/5/kodovi/2.CyclicSpectrum.py}
+
+
+\subsection{Test primer}
+
+\noindent\texttt{amino\_acid} = ['G', 'A', 'S', 'P', 'V', 'T', 'C', 'I', 'L', 'N', 'D', 'K', 'Q', 'E', 'M', 'H', 'F', 'R', 'Y', 'W']
+\\
+\texttt{amino\_acid\_mass} = [57, 71, 87, 97, 99, 101, 103, 113, 113, 114, 115, 128, 128, 129, 131, 137, 147, 156, 163, 186]
+\\
+\texttt{peptide} = ‚‚NQEL''
+\\\texttt{linear\_spectrum} = 
+\\\texttt{cyclic\_spectrum} = 
+
+
+\section{Cyclopeptide Sequencing}
+
+Funkcija ima tri parametra, \texttt{spectrum} - ciklični spektar peptida, \texttt{amino\_acid} - lista aminokiselina, i \texttt{amino\_acid\_mass} - lista masa aminokiselina. Funkcija nema povratnu vrednost, već se svi peptidi direktno ispisuju.
+
+Polazimo od liste \texttt{peptides} koja sadrži samo jedan član - praznu nisku. Brojač \texttt{i} inicijalno ima vrednost 1. Petlju vrtimo dok \texttt{peptides} ima elemente. U svakoj iteraciji pravimo novu listu (\texttt{next\_peptides}) peptida koju treba obraditi u narednoj iteraciji. Trenutnu listu peptida proširujemo svim mogućim aminokiselinama (funkcijom \texttt{expand}, \ref{expand}), a onda je kopiramo u listu \texttt{next\_peptides}. 
+
+Prolazimo sve peptide, element po element. Tražimo one peptide čija je masa (određujemo je funkcijom \texttt{mass}, \ref{mass}) jednaka roditeljskoj masi (funkcija \texttt{parent\_mass}, \ref{parentMass}) i čiji je spektar jednak zadatom - \texttt{spectrum}. Svaki peptid koji zadovolji ove uslove ispisujemo na standardni izlaz. Peptid, čija se masa poklopila sa roditeljskom, brišemo iz liste za sledeću iteraciju. Peptid, koji nije zadovoljio uslov za masu, proveravamo da li je konzistentan sa spektrom (funkcijom \texttt{consistent}, \ref{consistent}) i, ako nije, brišemo ga iz liste za sledeću iteraciju. Na kraju, \texttt{peptides} dobija vrednost liste za sledeću iteraciju, \texttt{next\_peptides}.
+
+\lstinputlisting[language=Python, frame=single]{nedelje/5/kodovi/3.CyclopeptideSequencing.py}
+
+
+\subsection{Expand}
+\label{expand}
+
+Funkcija ima dva parametra, \texttt{peptides} - listu peptida koju treba proširiti, i \texttt{amino\_acid} - lista aminokiselina. Povratna vrednost je lista proširenih peptida.
+
+Lista \texttt{extension} na početku je prazna. Prolazimo redom sve peptide, i za svaki peptid prolazimo sve aminokiselina i redom nadovezujemo, jednu po jednu, i tako izmenjen peptid dodajemo u listu.
+
+
+\lstinputlisting[language=Python, frame=single]{nedelje/5/kodovi/3.4.Expand.py}
+
+
+\subsection{Mass}
+\label{mass}
+
+Funkcija ima tri parametra, \texttt{peptide}, \texttt{amino\_acid} i \texttt{amino\_acid\_mass}. Povratna vrednost je ukupna masa peptida.
+
+Ukupnu masu peptida odredićemo kao sumu masa svih aminokiselina u lancu. Zbog toga, prolazimo redom sve aminokiseline u peptidu, pronalazimo je u listi \texttt{amino\_acid}, kako bismo dobili njenu masu, i uvećavamo ukupnu masu za masu te aminokiseline. 
+
+\lstinputlisting[language=Python, frame=single]{nedelje/5/kodovi/3.3.Mass.py}
+
+
+\subsection{Parent Mass}
+\label{parentMass}
+
+Funkcija ima jedan parametar - ciklični spektar peptida \texttt{spectrum}. Povratna vrednost je masa peptida, odnosno, poslednja vrednost u spektru.
+
+\lstinputlisting[language=Python, frame=single]{nedelje/5/kodovi/3.3.Mass.py}
+
+\subsection{Consistent}
+\label{consistent}
+
+Funkcija ima četiri parametra, \texttt{peptide}, \texttt{target\_spectrum}, \texttt{amino\_acid} i \texttt{amino\_acid\_mass}. Povratna vrednost je tipa boolean i zavisi od toga da li je peptid konzistentan sa spektrom.
+
+Da bismo proverili da li je peptid konzistentan sa spektrom, potrebno je da imamo njegov spektar i da ih uporedimo. Odredimo linearan spektar peptida (funkcijom \texttt{linear\_spectrum}, \ref{linearSpectrum}) i smestimo ga u \texttt{peptide\_linear\_spectrum}. Nakon toga, prolazimo redom sve vrednosti u peptidnom spektru i tražimo ih u zadatom spektru. Ukoliko se makar jedna vrednost iz \texttt{peptide\_linear\_spectrum} ne nalazi u \texttt{target\_spectrum}, vraćamo \texttt{False}. Ukoliko su sve vrednosti pronađene, vraćamo \texttt{True}.
+
+\lstinputlisting[language=Python, frame=single]{nedelje/5/kodovi/3.1.Consistent.py}
+
+
+\subsubsection{Test primer}
+
+\noindent\texttt{amino\_acid} = ['G', 'A', 'S', 'P', 'V', 'T', 'C', 'I', 'L', 'N', 'D', 'K', 'Q', 'E', 'M', 'H', 'F', 'R', 'Y', 'W']
+\\
+\texttt{amino\_acid\_mass} = [57, 71, 87, 97, 99, 101, 103, 113, 113, 114, 115, 128, 128, 129, 131, 137, 147, 156, 163, 186]
+\\
+\texttt{peptide} = ‚‚SPQR''
+\\\texttt{spectrum} =  = cyclic\_spectrum(peptide, amino\_acid, amino\_acid\_mass)
+\\\texttt{ispis:} 
+
+
+\section{Leadrboard Cyclopeptide Sequencing}
+
+Funkcija ima četiri parametra, \texttt{spectrum}, \texttt{N} - koliko najboljih peptida zadržavamo, \texttt{amino\_acid},  \texttt{amino\_acid\_mass}. Funkcija vraća vodeći peptid.
+
+Ideja je da se održava leaderboard kako bismo mogli da kontrolišemo broj kandidata. U svakoj iteraci zadržavamo prvih \texttt{N} peptida na tabeli, s tim da ako je \texttt{N}-ti peptid izjednačen sa jednim ili više drugih peptida, svi oni ulaze u sledeću iteraciju. Koliko je peptid dobar određujemo pomoću njihovog skora.
+
+Krećemo od \texttt{leaderboard} sa jednim elementom, praznom niskom, a to je i početna vrednost vodećeg peptida (\texttt{leader\_peptide}). Petlja se izvršava dok ima peptida na tabeli. U svakoj iteraciji pravimo novu listu (\texttt{next\_leaderboard}) peptida koju treba obraditi u narednoj iteraciji. Trenutnu tabelu proširujemo svim mogućim aminokiselinama (funkcijom \texttt{expand}, \ref{expand}), a onda je kopiramo u listu \texttt{next\_leaderboard}. 
+
+Za svaki peptid na tabeli proveravamo da li mu je masa (\texttt{mass}, \ref{mass}) jednaka roditeljskoj (\texttt{parent\_mass}, \ref{parentMass}). Ako jeste, proveravamo da li je njegov skor veći od skora vodećeg peptida (funkcija \texttt{score}, \ref{scoreCycle}), i, ako jeste, ažuriramo vodeći peptid. Ako ne važi uslov jednakosti za mase, proveravamo da li je masa peptida veća od roditeljske mase i, ako jeste, uklanjamo ga iz tabele za sledeću iteraciju.
+
+Pre nego što pređemo u sledeću iteraciju, potrebno je da skratimo tabelu, tako da zadrži najboljih \texttt{N} peptida. Ovo postižemo funkcijom \texttt{trim}, \ref{trim}.
+
+
+\lstinputlisting[language=Python, frame=single]{nedelje/5/kodovi/4.LeaderboardCyclopeptideSequencing.py}
+
+\subsection{Score}
+\label{scoreCycle} 
+
+Funkcija ima četiri parametra, \texttt{spectrum\_2}, \texttt{N} - koliko najboljih peptida zadržavamo, \texttt{amino\_acid},  \texttt{amino\_acid\_mass}. Funkcija vraća broj vrednosti koje su zajedničke za spektrum datog peptida i datog spektra.
+
+Prvo ćemo odrediti ciklični spektrum peptida i smestiti ga u \texttt{spectrum\_1}. Petlja se izvršava dok se nalazimo u okviru dozovljenih vrednosti za indekse lista \texttt{spectrum\_1} i \texttt{spectrum\_2}. Ukoliko se vrednosti na trenutnim pozicijama poklapaju, uvećati skor i oba brojača. Ukoliko je vrednost iz prvog spektra manja od vrednosti iz drugog spektra, uvećati samo prvi brojač, u obrnutoj situaciji, uvećati samo drugi brojač.
+
+
+\lstinputlisting[language=Python, frame=single]{nedelje/5/kodovi/4.1.Score.py}
+
+
+
+\subsection{Trim}
+\label{trim} 
+
+Funkcija ima pet parametara, \texttt{leaderboard}, \texttt{spectrum}, \texttt{N}, \texttt{amino\_acid} i \texttt{amino\_acid\_mass}.  Funkcija vraća skraćenu tabelu.
+
+Prvo ćemo odrediti skor za svaki peptid na tabeli. Prolazimo redom sve peptide u \texttt{leaderboard} i u listu \texttt{linear\_scores} (koja je inicijalno prazna) dodajemo linearni skor trenutnog peptida (funkcija \texttt{linear\_score}, \ref{scoreLinear}).
+
+Pravimo novu listu koja sadrži zipovane vrednosti iz \texttt{linear\_scores} i vrednosti iz tabele. Zatim, listu sortiramo u opadajućem poretku. Sada, \texttt{leaderboard} možemo ažurirati tako što iskopiramo samo drugi element zipovanog para. 
+
+Prolazimo elemente liste sa zipovanim vrednostima, počevši od pozicije \texttt{N} do kraja. Ako je skor $j$-tog elementa strogo manji od skora \texttt{N-1}-vog elementa, onda skraćujemo tabelu do pozicije $j$, odnosno, u \texttt{leaderboard} kopiramo drugi element para prvih $j$ elemenata liste \texttt{leaderboard\_zipped} i vraćamo \texttt{leaderboard}. Ovaj korak je bitan jer se može desiti da su elementi posle \texttt{N}-tog imaju isti skor kao i taj. Nakon petlje vratiti ceo \texttt{leaderboard} jer nije ništa moglo da se odseče.
+
+
+\lstinputlisting[language=Python, frame=single]{nedelje/5/kodovi/4.3.Trim.py}
+
+
+\subsubsection{Linear Score}
+\label{scoreLinear} 
+
+Funkcija ima četiri parametra, \texttt{spectrum\_2}, \texttt{N} - koliko najboljih peptida zadržavamo, \texttt{amino\_acid},  \texttt{amino\_acid\_mass}. Funkcija vraća broj vrednosti koje su zajedničke za spektrum datog peptida i datog spektra.
+
+Prvo ćemo odrediti linear spektrum peptida i smestiti ga u \texttt{spectrum\_1}. Petlja se izvršava dok se nalazimo u okviru dozovljenih vrednosti za indekse lista \texttt{spectrum\_1} i \texttt{spectrum\_2}. Ukoliko se vrednosti na trenutnim pozicijama poklapaju, uvećati skor i oba brojača. Ukoliko je vrednost iz prvog spektra manja od vrednosti iz drugog spektra, uvećati samo prvi brojač, u obrnutoj situaciji, uvećati samo drugi brojač.
+
+
+\lstinputlisting[language=Python, frame=single]{nedelje/5/kodovi/4.2.LinearScore.py}
+
+\subsubsection{Test primer}
+
+\noindent\texttt{amino\_acid} = ['G', 'A', 'S', 'P', 'V', 'T', 'C', 'I', 'L', 'N', 'D', 'K', 'Q', 'E', 'M', 'H', 'F', 'R', 'Y', 'W']
+\\
+\texttt{amino\_acid\_mass} = [57, 71, 87, 97, 99, 101, 103, 113, 113, 114, 115, 128, 128, 129, 131, 137, 147, 156, 163, 186]
+\\\texttt{peptide} = ‚‚SPQR''
+\\\texttt{spectrum} =  = cyclic\_spectrum(peptide, amino\_acid, amino\_acid\_mass)
+\\\texttt{N} = 10
+\\\texttt{ispis:} 
+ 

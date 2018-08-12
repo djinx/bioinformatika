@@ -1,0 +1,142 @@
+\section{Manhattan Tourist}
+
+Funkcija ima četiri parametra, \texttt{n}, \texttt{m}, \texttt{down} - matrica cene grana koje vode dole, i \texttt{right} - cene grana koje vode desno. Funkcija vraća najveću cenu puta od \texttt{(0, 0)} do \texttt{(n-1, m-1)}.
+
+Održavamo matricu \texttt{s}, dimenzija $n\times m$, koja čuva cenu puta do svakog čvora. Svi na početku imaju cenu 0. Dodatno, čuvamo matricu \texttt{backtrack}, dimenzije $n \times m$, u kojoj za svaki čvor pamtimo prethodnika, odnosno, čvor iz kog smo došli do tog. Čvorovi su predstavljeni kao par vrednosti indeksa u matrici. Prilikom inicijalizacije matrice, svim čvorovima postaviti čvor (0, 0) za prethodnika.
+
+Prvo ćemo se pozabaviti izračunavanjem cena i prethodnika čvorova za koje nemamo izbor, odnosno, do kojih postoji put samo iz jednog čvora. To su elementi prve vrste i prve kolone. Prethodnika za element na poziciji (0, 0) moramo posebno označiti jer iz njega krećemo. Najbolje je staviti neke nevažeće vrednosti za indekse, kao na primer (-1, -1).
+
+Za svaki element prve kolone, cenu računamo kao zbir cene elementa iznad njega i cene na njegovoj poziciji iz matrice \texttt{down}. Prethodnik je element iznad njega jer smo njegovu cenu iskoristili. Za svaki element prve vrste, cenu računamo kao zbir cene elementa levo od njega i cene na njegovoj poziciji iz matrice \texttt{right}. Prethodnik je element levo od njega jer smo njegovu cenu iskoristili. Obe petlje započeti od 1 jer je element (0, 0) već inicijalizovan i ne upada u ove šablone!
+
+Ostale elemente obradićemo redom, kroz dvostruku petlju. Za svaki element računamo cenu dolaska odozgo (\texttt{to\_down}), kao zbir cene elementa iznad njega i cene na njegovoj poziciji iz matrice \texttt{down}, i cenu dolaska sleva (\texttt{to\_right}), kao zbir cene elementa levo od njega i cene na njegovoj poziciji iz matrice \texttt{right}. Biramo veću cenu, zapisujemo je u matricu cena i u matrici \texttt{backtrack} upisujemo odgovarajući čvor za prethodnika.
+
+Kada su određene vrednosti za sve elemente, želimo da ispišemo čitavu putanju (unazad, od \texttt{(n-1, m-1)} do \texttt{(0, 0)}), nakon čega vraćamo vrednost elementa \texttt{n-1, m-1} matrice cena. Polazimo od poslednjeg elementa, \texttt{(n-1, m-1)}, i vrtimo petlju dok u matrici \texttt{backtrack} ne naiđemo na element čija je vrednost jednaka (-1, -1) - podsetimo se da je to pogodno izabran prethodnik za početni čvor.
+
+
+\lstinputlisting[language=Python, frame=single]{nedelje/6/kodovi/1.ManhattanTourist.py}
+
+\subsection{Test primer}
+
+\noindent \texttt{n} = 3
+\\\texttt{m} = 3
+\\ \noindent\texttt{down} = [
+\\\indent[0, 0, 0, 0],
+\\\indent[0, 1, 2, 1],
+\\\indent[0, 1, 1, 1],
+\\\indent[0, 1, 1, 1]
+\\]
+\\
+\\ \texttt{right} = [
+\\\indent[0, 0, 0, 1],
+\\\indent[0, 3, 5, 1],
+\\\indent[0, 1, 0, 1],
+\\\indent[0, 1, 0, 1]
+\\]
+\\\texttt{manhattan} = 
+
+\section{LCS Backtrack}
+
+Funkcija ima dva parametra, niske \texttt{v} i \texttt{w}. Povratna vrednost je broj zajedničkih karaktera (broj pogodaka).
+
+Prvo ćemo odrediti \texttt{n} - dužinu niske \texttt{v}, i \texttt{m} - dužinu niske \texttt{w}. Zatim, pravimo matricu cena \texttt{s}, dimenzije $(n+1) \times (m+1)$, i matricu \texttt{backtrack} istih dimenzija čije elemente inicijalizujemo na (-1, -1). 
+
+Za svaki element prve kolone, prethodnik je element iznad njega, a za svaki element prve vrste prethodnik je element levo od njega. Obe petlje započeti od 1 jer je element (0, 0) već inicijalizovan i ne upada u ove šablone!
+
+Dvostrukom petljom obrađujemo ostale elemente. Za svakog računamo cenu kao maksimum tri vrednosti: cena gornjeg elementa (deletion), cena levog elementa (insertion) i cena dijagonalnog elementa uvećana za 1 ukoliko su karakteri na prethodnim pozicijama isti (ako su isti karakteri - match, ako su različiti - missmatch). 
+
+Potrebno je još odrediti prethodnika trenutnog elementa. To se može odrediti poređenjem cena trenutnog elementa sa cenama okolnih. Ukoliko je cena trenutnog jednaka ceni elementa iznad, onda je element iznad prethodnik. Ukoliko je cena trenutnog elementa jednaka ceni elementa levo od njega, onda je element levo njegov prethodnik. U suprotnom, element na dijagonali je prethodnik.
+
+Preostalo je još da sastavimo nisko koja predstavlja zajedničku podsekvencu. Određujemo indekse, \texttt{i} i \texttt{j}, od kojih ćemo početi. To su indeksi prethodnika poslednjeg elementa. Niska \texttt{lcs} inicijalno je prazna. Ovu vrednost menjamo u slučaju da je prethodnik poslednjeg elementa na dijagonali, odnosno, u slučaju da je \texttt{i=n-1} i \texttt{j=m-1}. Tada, \texttt{lcs} dobija vrednost poslednjeg karaktera niske \texttt{v} (ili niske \texttt{w}, pošto su te vrednosti svakako jednake).
+
+Petljuu vrtimo dok su \texttt{i} i \texttt{j} različiti od 0. U svakoj iteraciji proveravamo da li je prethodnih na dijagonali i, ako jeste, karakter prethodnika nadovezujemo na početak. Ažuriramo \texttt{i} i \texttt{j} tako da sadrže indekse prethodnika.
+
+Kada je određena niska \texttt{lcs}, štampamo je i vraćamo cenu poslednjeg elementa.
+
+
+\lstinputlisting[language=Python, frame=single]{nedelje/6/kodovi/2.LCSBacktrack.py}
+
+\subsection{Test primer}
+
+\noindent\texttt{v} = ‚‚abcd''
+\\\texttt{w} = ‚‚dabe''
+\\\texttt{lcs} = 
+\\\texttt{match} = 
+
+\section{Global Alignment}
+
+Funkcija ima dva parametra, niske \texttt{v} i \texttt{w}. Povratna vrednost je skor poravnanja.
+
+Pre implementacije funkcije potrebno je definisati vrednosti za pogodak (\texttt{MATCH}), promašaj (\texttt{MISSMATCH}) i za rupu (\texttt{GAP\_PENALTY}).
+
+Prvo ćemo odrediti \texttt{n} - dužinu niske \texttt{v}, i \texttt{m} - dužinu niske \texttt{w}. Zatim, pravimo matricu cena \texttt{s}, dimenzije $(n+1) \times (m+1)$, i matricu \texttt{backtrack} istih dimenzija čije elemente inicijalizujemo na (-1, -1). 
+
+Za svaki element prve kolone, cenu računamo kao zbir cene elementa iznad njega i kazne za rupu. Prethodnik je element iznad njega jer smo njegovu cenu iskoristili. Za svaki element prve vrste, cenu računamo kao zbir cene elementa levo od njega i kazne za rupu. Prethodnik je element levo od njega jer smo njegovu cenu iskoristili. Obe petlje započeti od 1 jer je element (0, 0) već inicijalizovan i ne upada u ove šablone!
+
+Dvostrukom petljom obrađujemo ostale elemente. Za svakog računamo cenu kao maksimum tri vrednosti: zbir cene gornjeg elementa i kazne za rupu (deletion), zbir cene levog elementa i kazne za rupu (insertion) i cena dijagonalnog elementa uvećana za za vrednost koju vraća funkcija \texttt{match\_score} (\ref{matchScore}). 
+
+Potrebno je još odrediti prethodnika trenutnog elementa. To se može odrediti poređenjem cena trenutnog elementa sa cenama okolnih. Ukoliko je cena trenutnog jednaka zbiru cene elementa iznad i kazne za rupu, onda je element iznad prethodnik. Ukoliko je cena trenutnog elementa jednaka zbiru cene elementa levo od njega i kazne za rupu, onda je element levo njegov prethodnik. U suprotnom, element na dijagonali je prethodnik.
+
+Sledeći korak je da odredimo kako izgledaju niske \texttt{v} i \texttt{w} sa svim insercijama i delecijama. Izmenjene niske čuvamo u promenljivama \texttt{v\_p} i \texttt{w\_p}, a njihovi indeksi su, redom, \texttt{i=n} i \texttt{j=m}. Niske su, naravno, inicijalno prazne.
+
+Petlju vrtimo dok ne dođemo do početnog elementa, (0, 0). U zavisnosti od prethodnika zaključićemo da li se desila insercija, delecija ili (ne)poklapanje. Ukoliko je prethodnik dijagonalni element, u pitanju je (ne)poklapanje i obe niske proširujemo nadovezivanjem prethodnih karaktera na početak. Ukoliko je prethodnik element iznad, u pitanju je delecija. Niska \texttt{v\_p} proširuje se nadovezivanjem prethodnog karaktera niske \texttt{v} na početak, a niski \texttt{w\_p} se nadovezuje '-' na početak. U preostalom slučaju imamo inserciju kada se niski \texttt{v\_p} nadovezuje '-' na početak, a niski \texttt{w\_p} se nadovezuje prethodni karakter niske \texttt{w} na početak.
+
+Nakon što smo formirali niske i odštampali ih na standardni izlaz, vraćamo ukupan skor ovog poravnanja, odnosno, vrednost poslednjeg elementa matrice \texttt{s}.
+
+\lstinputlisting[language=Python, frame=single]{nedelje/6/kodovi/3.GlobalAlignment.py}
+
+\subsection{Match Score}
+\label{matchScore}
+
+Funkcija ima dva parametra, karaktere \texttt{c1} i \texttt{c2}. Funkcija vraća vrednost \texttt{MATCH}, ako su karakteri jednaki, odnosno, vraća \texttt{MISSMATCH} ako se razlikuju.
+
+
+\lstinputlisting[language=Python, frame=single]{nedelje/6/kodovi/3.1.MatchScore.py}
+
+\subsubsection{Test primer}
+
+\noindent\texttt{v} = ‚‚AAATTTGGGCCCGGGAAATTTCCC''
+\\\texttt{w} = ‚‚GGGCCCTT''
+
+\section{Local Alignment}
+
+Funkcija ima dva parametra, niske \texttt{string\_1} i \texttt{string\_2}. Povratna vrednost je dužina najduže zajedničke podsekvence.
+
+Pravimo matricu \texttt{DP}, dimenzije |string\_1|$\times$|string\_2|, u kojoj čuvamo cene. Elementi prve kolone i prve vrste imaju vrednosti 0. Ostale elemente računamo u dvostrukoj petlji. Vrednost svakog elementa predstavlja maksimum tri četiri vrednosti: 0 (besplatna taksi vožnja), vrednost elementa iznad umanjena za 2 (delecija), vrednost elementa levo umanjena za 2 (insercija) i vrednost dijagonalnog elementa uvećana za jedan, ako su karakteri na prethodnoj poziciji jednaki, odnosno, nepormenjena ako se ti karakteri razlikuju.
+
+Preostaje nam da odredimo maksimalnu vrednost matrice, jednostavnim proslaskom pomoću dvostruke petlje nakon čega ćemo tu vrednost vratiti.
+
+\lstinputlisting[language=Python, frame=single]{nedelje/6/kodovi/4.LocalAlignment.py}
+
+\subsection{Test primer}
+
+\noindent\texttt{string\_1} = 'ACGTGCTCG'
+\\\texttt{string\_2} = 'AATGCTCT'
+
+\section{Edit Distance}
+
+Funkcija ima dva parametra, niske \texttt{v} i \texttt{w}. Povratna vrednost je edit rastojanje niski \texttt{v} i \texttt{w}, odnosno broj operacija potreban da bi se niska \texttt{v} pretvorila u nisku \texttt{w}.
+
+Podsetimo se edit operacija: umetanje u prvu nisku (desno), brisanje iz druge niske (dole) i izmena karaktera prve niske u karakter druge niske (dijagonalno). Napomena: smer dijagonalno se koristi i kada se karakteri poklapaju, s tim da se tada edit rastojanje ne uvećava.
+
+Prvo ćemo odrediti \texttt{n} - dužinu niske \texttt{v}, i \texttt{m} - dužinu niske \texttt{w}. Zatim, pravimo matricu rastojanja \texttt{s}, dimenzije $(n+1) \times (m+1)$, i matricu \texttt{backtrack} istih dimenzija čije elemente inicijalizujemo na (-1, -1). 
+
+Za svaki element prve kolone, rastojanje je redni broj kolone. Prethodnik je element iznad njega. Za svaki element prve vrste, rastojanje je redni broj vrste. Prethodnik je element levo od njega. Obe petlje započeti od 1 jer je element (0, 0) već inicijalizovan i ne upada u ove šablone!
+
+Dvostrukom petljom određujemo vrednosti ostalih elemenata. Vrednost trenutnog elementa računa se kao minimum tri vrednosti: vrednost elementa iznad uvećana za 1 (delecija), vrednost elementa levo uvećana za 1 (insercija), vrednost dijagonalnog elementa, ako su karakteri na prethodnoj poziciji jednaki (poklapanje), inače je uvećana za jedan (nepoklapanje). 
+
+Potrebno je još odrediti prethodnika trenutnog elementa. To se može odrediti poređenjem rastojanja trenutnog elementa sa rastojanjima okolnih. Ukoliko je rastojanje trenutnog jednako zbiru rastojanja elementa iznad uvećanog za 1, onda je element iznad prethodnik. Ukoliko je rastojanje trenutnog elementa jednako zbiru rastojanja elementa levo od njega uvećanog za 1, onda je element levo njegov prethodnik. U suprotnom, element na dijagonali je prethodnik.
+
+
+Sledeći korak je da odredimo kako izgledaju niske \texttt{v} i \texttt{w} sa svim insercijama i delecijama. Izmenjene niske čuvamo u promenljivama \texttt{v\_p} i \texttt{w\_p}, a njihovi indeksi su, redom, \texttt{i=n} i \texttt{j=m}. Niske su, naravno, inicijalno prazne.
+
+Petlju vrtimo dok ne dođemo do početnog elementa, (0, 0). U zavisnosti od prethodnika zaključićemo da li se desila insercija, delecija ili (ne)poklapanje. Ukoliko je prethodnik dijagonalni element, u pitanju je (ne)poklapanje i obe niske proširujemo nadovezivanjem prethodnih karaktera na početak. Ukoliko je prethodnik element iznad, u pitanju je delecija. Niska \texttt{v\_p} proširuje se nadovezivanjem prethodnog karaktera niske \texttt{v} na početak, a niski \texttt{w\_p} se nadovezuje '-' na početak. U preostalom slučaju imamo inserciju kada se niski \texttt{v\_p} nadovezuje '-' na početak, a niski \texttt{w\_p} se nadovezuje prethodni karakter niske \texttt{w} na početak.
+
+Nakon što smo formirali niske i odštampali ih na standardni izlaz, vraćamo ukupan skor ovog poravnanja, odnosno, vrednost poslednjeg elementa matrice \texttt{s}.
+
+
+\lstinputlisting[language=Python, frame=single]{nedelje/6/kodovi/5.EditDistance.py}
+
+\subsection{Test primer}
+
+\noindent\texttt{v} = ‚‚AAATTTGGGCCCGGGAAATTTCCC''
+\\\texttt{w} = ‚‚AAACCCTTTGGGCCCTTTAAACCC'

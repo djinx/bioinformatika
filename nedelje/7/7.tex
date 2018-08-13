@@ -1,0 +1,31 @@
+\section{Affine Gap Alignment}
+
+Funkcija ima dva aprametra, niske \texttt{string\_1} i \texttt{string\_2}. Povratna vrednost je vrednost najvećeg poravnanja.
+
+Održavamo tri matrice, \texttt{upper}, \texttt{lower} i \texttt{middle}. Svaka je dimenzija (|string\_1|+1) $\times$ (|string\_2|+1) i svakoj su vrednosti inicijalizovane na $-\infty$. Jedino prvi element srednje matrice ima vrednost 0. 
+
+
+U dvostrukoj petlji računamo vrednosti za svaki element ovih matrica kao maksimume tri broja. Prelazak sa jednog nivoa na drugi, odnosno, iz jedne matrice u drugu, kažnjavamo sa -10 (to je pojava nove rupe - gap). Svaki sledeći karakter u rupi kažnjavamo sa -0.5. 
+
+Za gornju matricu to su: element središnje matrice iz prethodne kolone umanjen za 10 i 0.5, element gornje matrice iz prethodne kolone umanjen za 0.5 i element donje matrice umanjen za 10 i 0.5. 
+
+Za donju matricu to su: element središnje matrice iz prethodne vrste umanjen za 10 i 0.5, element gornje matrice iz prethodne vrste umanjen za 10 i 0.5 i element donje matrice umanjen za 0.5. 
+
+Za središnju matricu to su: element središnje matrice iz prethodne kolone i prethodne vrste uvećan za povratnu vrednost funkcija \texttt{match} za karaktere niski na prethodnim pozicijama (\ref{match2}), element gornje matrice i element donje matrice. 
+
+Povratna vrednost je maksimum poslednjih elemenata ove tri matrice.
+
+\lstinputlisting[language=Python, frame=single]{nedelje/7/kodovi/1.AffineGapAlignment.py}
+
+\subsection{Match}
+\label{match2}
+
+Funkcija ima dva parametra, karakteri \texttt{s1} i \texttt{s2}. Ukoliko su karakteri jednaki, vraćamo vrednost 1, u suprotnom -4.
+
+\lstinputlisting[language=Python, frame=single]{nedelje/7/kodovi/1.1.Match.py}
+
+\subsubsection{Test primer}
+
+\noindent \texttt{string\_1} = 'ACGTGCTCG'
+\\\texttt{string\_2} = 'AATGCTCT'
+\\\texttt{alignment} = 

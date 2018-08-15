@@ -1,0 +1,147 @@
+\section{Additive Phylogeny}
+\setbookcodestyle
+
+Funkcija ima dva parametra, matricu \texttt{D} i broj čvorova \texttt{n}. Povratna vrednost je graf \texttt{T}.
+
+Implementacija je rekurzivna. Izlaz iz rekurzije je slučaj kada imamo samo dva čvora. Tada pravimo graf sa ta dva čvora, a grane su otežane odgovarajućim vrednostima iz matrice \texttt{D}. Graf je predstavljen kao mapa, gde je ključ čvor, a vrednost je lista parova (čvor, težina grane).
+
+Određujemo vrednost limb-a (funkcijom \texttt{limb}, \ref{limb}). Svakoj grani (tj. svakoj vrednosti u matrici \texttt{D}), ne uključujući poslednji, umanjujemo vrednost za limb.
+
+Određujemo tri lista takva da zbir težina dve grane bude jednak težini treće grane (funkcijom \texttt{three\_leaves}, \ref{threeLeaves}). Zapamtićemo vrednost grane \texttt{(i, n-1)} u promenljivu \texttt{x}. 
+
+Sada nam je potreban graf \texttt{T} za istu matricu i smanjen broj čvorova za 1 (rekurzivni poziv). Sada treba da ubacimo novi čvor u T. To ćemo učiniti funkcijom \texttt{insert\_vertex\_on\_path} pri čemu nam ona vraća novi graf \texttt{T} i čvor \texttt{v}, koji je umetnut. Tom čvoru u listu dodajemo par \texttt{(n-1, limb)}, a čvoru \texttt{n-1} pravimo listu koja sadrži samo par \texttt{(v, limb)}.
+
+
+\lstinputlisting[language=Python, frame=single]{nedelje/9/kodovi/1.AdditivePhylogeny.py}
+
+\subsection{Limb}
+\label{limb}
+
+Funkcija ima dva parametra, matricu \texttt{D} i čvor \texttt{j}. Funkcija vraća najmanju vrednost rastojanja čvorova.
+
+Dvostrukom petljom prolazimo sve čvorove i tražimo dva čvora \texttt{i} i \texttt{k} koji daju najmanje rastojanje po formuli (D[i][j] + D[j][k] - D[i][k])/2.
+
+\lstinputlisting[language=Python, frame=single]{nedelje/9/kodovi/1.1.Limb.py}
+
+
+\subsection{Three Leaves}
+\label{threeLeaves}
+
+Funkcija ima dva parametra, matricu \texttt{D} i čvor \texttt{n}. Funkcija vraća torku sačinjenu od tri čvora takva da važi da je težina grane \texttt{(i, k)} jednaka zbiru težina grana \texttt{(i, n-1)} i \texttt{(n-1, k)}. 
+
+\lstinputlisting[language=Python, frame=single]{nedelje/9/kodovi/1.2.ThreeLeaves.py}
+
+
+\subsection{Insert Vertex On Path}
+\label{insertVertexOnPath}
+
+Funkcija ima četiri parametra, trenutni graf \texttt{T}, čvorove \texttt{start} i \texttt{stop} i rastojanje između tih čvorova \texttt{distance}. Povratna vrednost je par novi graf \texttt{T} i čvor \texttt{new\_v} koji je ubačen u graf.
+
+Prvo moramo odrediti putanju u grafu \texttt{T} od čvora \texttt{start} do \texttt{stop} (funkcijom \texttt{find\_path}, \ref{findPath}). Zatim, određujemo mesto gde treba ubaciti novi čvor (funkcijom \texttt{find\_insertion\_point}, \ref{findInsertionPoint}). Funkcija vraća dva čvora \texttt{v} i \texttt{w}, između kojih ubacujemo čvor, rastojanje \texttt{e} između tih čvorova i rastojanje \texttt{e\_dist} na kom treba da se nađe novi čvor. Ukoliko je vraćena vrednost 0 za rastojanje, vratiti par neizmenjeni graf \texttt{T} i čvor \texttt{w}. 
+
+Iz liste čvora \texttt{v} uklanjamo granu koja vodi do \texttt{w} i obrnuto. Novi čvor dobijamo nadovezivanjem \texttt{v}, \texttt{w} i \texttt{e\_dist}. Njegovu listu postavljamo na praznu. Zatim, u nju nadovežemo granu do čvora \texttt{w} sa rastojanjem \texttt{e\_dist}, i do čvora \texttt{v} sa rastojanjem \texttt{e - e\_dist}. Takođe, treba dodati grane do novog čvora u liste za čvorove \texttt{v} i \texttt{w} sa odgovarajućim rastojanjima.
+
+
+\lstinputlisting[language=Python, frame=single]{nedelje/9/kodovi/1.3.InsertVertexOnPath.py}
+
+\subsubsection{Find Path}
+\label{findPath}
+
+Funkcija ima tri parametra, trenutni graf \texttt{T} i čvorove \texttt{start} i \texttt{stop}. Povratna vrednost je lista grana, odnosno, parova (čvor, rastojanje).
+
+Inicijalizujemo putanju na par početni čvor i rastojanje 0. Održavamo mapu posećenih čvorova i označavamo da je \texttt{start} posećen. 
+
+Dok u putanji ima parova, izdvajamo čvor \texttt{v} poslednje grane. Ukoliko je taj čvor jednak čvoru \texttt{stop}, vraćamo putanju. Inače, pokušavamo da pronađemo čvor \texttt{w} koji nije posećen, a povezan je sa \texttt{v}. Dakle, prolazimo listu čvora \texttt{v} i prvi par \texttt{(w, e)}, za koji važi da \texttt{w} nije posećen, dodajemo u putanju. Obeležavamo da je \texttt{w} posećen i da smo pronašli pogodan čvor. Pretragu prekinuti čim se nađe čvor. 
+
+Ukoliko nismo uspeli da pronađemo takav čvor, izbacujemo poslednji par iz putanje i nastavljamo dalje. Ako smo izbacili sve parove iz putanje, vraćamo praznu listu.
+
+\lstinputlisting[language=Python, frame=single]{nedelje/9/kodovi/1.4.FindPath.py}
+
+\subsubsection{Find Insertion Point}
+\label{findInsertionPoint}
+
+Funkcija ima dva parametra, putanju \texttt{path} i rastojanje \texttt{distance}. Povratna vrednost torka koja sadrži dva čvora, između kojih treba ubaciti novi čvor, rastojanje između ta dva čvora i rastojanje na kom novi čvor treba da se nađe u odnosu na drugi čvor.
+
+Pamtimo trenutno rastojanje, koje je incijijalno jednako 0, i prethodni čvor, koji je na početku prvi čvor na putanji.
+
+Za svaki sledeći element u \texttt{path} izdvajamo čvor \texttt{v} i rastojanje \texttt{e} iz tog para. Trenutno rastojanje uvećavamo za \texttt{e} i pamtimo \texttt{v} u \texttt{next\_vertex}. Ukoliko je trenutno rastojanje veće od \texttt{distance} našli smo čvorove koji su nam potrebni. Vraćamo torku (prethodni čvor, sledeći čvor, \texttt{e}, razlika trenutnog i zadatog rastojanja). Inače, prehodni čvor postavljamo na \texttt{v} i nastavljamo potragu.
+
+
+
+\lstinputlisting[language=Python, frame=single]{nedelje/9/kodovi/1.5.FindInsertionPoint.py}
+
+
+
+\subsubsection{Test primer}
+
+\noindent \texttt{D} = [
+\\\indent[0,  13, 21, 22],
+\\\indent[13,  0, 12, 13],
+\\\indent[21, 12,  0, 13],
+\\\indent[22, 13, 13,  0]
+\\]
+\\\texttt{n} = len(D)
+\\\texttt{T} = 
+
+
+\section{UPGMA}
+
+Funkcija ima dva parametra, matricu rastojanja \texttt{D} i broj čvorova \texttt{n}. Povratna vrednost je prvi klaster.
+
+Inicijalizujemo listu klastera tako da svaki klaster sadrži jedan element - \texttt{i}, i svaki je starosti 0. Broj klastera, \texttt{num\_of\_clusters} postavljamo na broj redova matrice \texttt{D}.
+
+Dok je broj klastera veći od 1, tražimo dva najsličnija klastera (rastojanje se koristi kao mera sličnosti i koristimo funkciju \texttt{min\_distance}, \ref{minDistance}). Funkcija nam vraća \texttt{i} i \texttt{j} - indekse bliskih klastera, kao i \texttt{distance} - njihovo rastojanje. 
+
+Pravimo novi klaster koji sadrži elemente oba klastera, a njegova starost je polovina rastojanja. Levo dodajemo \texttt{i}-ti, a desno \texttt{j}-ti klaster. 
+
+Ostaje još da ažuriramo listu klastera. U novu listu nadovezujemo sve klastere osim \texttt{i}-tog i \texttt{j}-tog. Zatim, dodajemo novi klaster. Prepisujemo novu listu u početnu listu klastera, a broj klastera smanjujemo za 1.
+
+\lstinputlisting[language=Python, frame=single]{nedelje/9/kodovi/2.UPGMA.py}
+
+
+\subsection{Cluster}
+\label{cluster}
+
+Klasa sadrži polje \texttt{elements}, \texttt{age}, \texttt{left} i \texttt{right}. Prva dva se inicijalizuju vrednostima parametara, a ostali imaju početnu vrednost \texttt{None}.
+
+Funkcija za ispit, \texttt{str}, prvo ispisuje elemente klastera a potom i starost.
+
+Funkcija \texttt{add\_left} (\texttt{add\_right}) postavlja vrednost polja \texttt{left} (\texttt{right}) na vrednost parametra.
+
+\lstinputlisting[language=Python, frame=single]{nedelje/9/kodovi/2.1.Cluster.py}
+
+
+\subsection{Min distance}
+\label{minDistance}
+
+Funkcija ima tri parametra, listu klastera \texttt{clusters}, matricu rastojanja \texttt{D} i broj klastera \texttt{num\_of\_clusters}. Povratna vrednost je torka - dva redna broja klastera koji su najbliži i njihovo rastojanje.
+
+Pamtimo trenutno najmanje rastojanje, i indekse klastera koji se nalaze natom najmanjem rastojanju. Dvostrukom petljom prolazimo sve klastere iz liste. Za svaki par odredićemo rastojanje (funkcijom \texttt{distance}, \ref{distance2}). Ukoliko je to rastojanje manje od trenutnog minimuma, ažuriramo minimum i indekse. Na kraju vraćamo torku koja sadrži te tri vrednosti.
+
+
+\lstinputlisting[language=Python, frame=single]{nedelje/9/kodovi/2.2.MinDistance.py}
+
+
+\subsubsection{Distance}
+\label{distance2}
+
+Funkcija ima tri parametra, matricu rastojanja \texttt{D} i dva klastera \texttt{cluster\_1} i \texttt{cluster\_2}. Povratna vrednost je rastojanje ta dva klastera.
+
+Rastojanje se računa kao količnik sume rastojanja svih elemenata ova dva klastera i proizvoda njihovog broja elemenata.
+
+\lstinputlisting[language=Python, frame=single]{nedelje/9/kodovi/2.3.Distance.py}
+
+
+
+
+
+\subsubsection{Test primer}
+
+\noindent \texttt{D} = [
+\\\indent[0,  13, 21, 22],
+\\\indent[13,  0, 12, 13],
+\\\indent[21, 12,  0, 13],
+\\\indent[22, 13, 13,  0]
+\\]
+\\\texttt{n} = len(D)
+\\\texttt{T} = 

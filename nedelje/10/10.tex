@@ -1,0 +1,217 @@
+\section{Trie Matching}
+
+Funkcija ima dva parametra, \texttt{text} i sekvence koje tražimo u tekstu u drvenolikoj strukturi - \texttt{Trie}. Funkcija vraća listu sekvenci koje se nalaze u tekstu.
+
+Krećemo od prazne liste pronađenih sekvenci. Petlju vrtimo dok nismo izbacili sve karaktere iz teksta. Tražimo sekvence koje se nalaze u trenutnom tekstu (funkcijom \texttt{preficTriePatternMatching}, \ref{prefixTrieMatching}). Ukoliko smo pronašli neku, dodajemo povratnu vrednost u listu. Uklanjamo prvi karakter iz teksta i ponavljamo postupak.
+
+\lstinputlisting[language=Python, frame=single]{nedelje/10/kodovi/1.TrieMatching.py}
+
+
+\subsection{Prefix Trie Pattern Matching}
+\label{prefixTrieMatching}
+
+Funkcija ima dva parametra, \texttt{text} i sekvence koje tražimo u tekstu u drvenolikoj strukturi - \texttt{Trie}. Funkcija vraća sekvencu iz \texttt{Trie} koja se nalazi u tekstu.
+
+Čvor \texttt{v} na početku je koreni i dodeljujemo mu vrednost 'root'. Prolazimo redom sve karaktere teksta. Ukoliko se neki od karaktera ne nalazi u listi čvora \texttt{v} vraćamo \texttt{False}. Inače, \texttt{v} dobija novu vrednost, i to onu koja odgovara karakteru \texttt{c} u listi čvora \texttt{v}. 
+
+Sada proveravamo da li se znak '\$' nalazi u listi čvora \texttt{v}. Ako se nalazi, vraćamo vrednost koja odgovara karakteru '\$' u listi čvora \texttt{v}. Ako smo obradili sve karaktere teksta, znači da nismo naišli na poklapanje i vraćamo \texttt{False}.
+
+\lstinputlisting[language=Python, frame=single]{nedelje/10/kodovi/1.1.PrefixTriePatternMatching.py}
+
+
+\subsection{Trie Construction}
+\label{trieConstruction}
+
+Funkcija ima jedan parametar, listu \texttt{patterns} od koje treba napraviti \texttt{Trie}, što je povratna vrednost.
+
+\texttt{Trie} će biti predstavljeno mapom čiji su ključevi nazivi čvorova (neke niske), a vrednosti su mape.
+
+Inicijalizujemo \texttt{Trie} na praznu mapu, a onda dodajemo čvor sa nazivom \textit{'root'} čija je mapa takođe prazna na početku. Dodatno, pratimo broj čvorova, na početku to je 1.
+
+Prolazimo redom sve sekvence liste \texttt{patterns} i dodajemo ih u \texttt{Trie} (funkcijom \texttt{add\_to\_trie}, \ref{addToTrie}). Obratiti pažnju da treba proslediti sekvencu koja sadrži znak '\$' na kraju! Funkcija vraća izmenjeni \texttt{Trie} i broj čvorova.
+
+
+\lstinputlisting[language=Python, frame=single]{nedelje/10/kodovi/1.2.TrieConstruction.py}
+
+
+\subsection{Add To Trie}
+\label{addToTrie}
+
+Funkcija ima četiri parametra, \texttt{Trie}, \texttt{pattern}, \texttt{number\_of\_nodes} i \texttt{pattern\_id}. Funkcija vraća izmenjeni \texttt{Trie} i broj čvorova.
+
+Čvora sa oznakom 'root' smeštamo u promenljivu \texttt{current\_node}. Sekvencu prolazimo karakter po karakter, svaki ćemo smestiti u promenljivu \texttt{c}. Ukoliko se taj karakter nalazi u mapi trenutnog čvora, onda trenutni čvor postaje vrednost koja odgovara karakteru \texttt{c} iz mape čvora \texttt{current\_node}. U suprotnom, ukoliko nismo došli do kraja sekvence, odnosno, ukoliko je \texttt{c} različit od '\$' onda pravimo novi čvor.
+
+Pravimo čvor sa oznakom \texttt{i} na koju nadovezujemo trenutni broj čvorova. Njegovu mapu postavljamo na praznu. Vrednost koja odgovara karakteru \texttt{c} iz mape čvora \texttt{current\_node} postavljamo na oznaku novog čvora. Trenutni čvor dobija vrednost novog čvora i uvećavamo broj čvorova za jedan.
+
+Ukoliko smo došli do kraja sekvence, pravimo novi čvor sa oznakom \texttt{pattern\_id} i postavljamo ga za vrednost koja odgovara karakteru \texttt{c} iz mape čvora \texttt{current\_node}, a mapa novog čvora inicijalizovana je na praznu.
+
+
+\lstinputlisting[language=Python, frame=single]{nedelje/10/kodovi/1.3.AddToTrie.py}
+
+\subsubsection{Test primer}
+
+\noindent\texttt{patterns} = ['ananas', 'and', 'antenna', 'banana', 'bandana', 'nab', 'nana', 'pan']
+\\\texttt{query} = 'bananananaspand'
+\\\texttt{Trie = trie\_construction(patterns)} 
+\\\texttt{found\_patterns} =
+
+
+
+\section{Pattern Matching With Suffix Array}
+
+Funkcija ima dva parametra, \texttt{suffix\_array} - sufiksni niz napravljen na osnovu teksta, i \texttt{pattern} - sekvenca koju tražimo u tekstu. Povratna vrednost je lista pozicija na kojima počinje sekvenca u tekstu.
+
+Održavamo vrednosti \texttt{top}, koja kreće od pozicija 0, i \texttt{bottom}, koja kreće od pozicije |suffix\_array|-1. Dok važi da je \texttt{top} manji od \texttt{bottom} izračunavamo srednji element \texttt{mid}, kao srednju vrednost ove dve. 
+
+Ukoliko je dužina sufiksa središnjeg veća od dužine sekvence koju tražimo, onda proveravamo i da li je prefiks dužine |pattern| u središnjem sufiksu jednak sekvenci \texttt{pattern}. Ako jeste, vraćamo povratnu vrednost funkcije \texttt{find\_neighborhood} (\ref{findNeighborhood}). 
+
+Sledeći korak odnosi se na ažuriranje vrednosti za \texttt{top} i \texttt{bottom} kao u binarnoj pretrazi. Tako da, ako je sekvenca manja od središnjeg elementa sufiksnog niza, onda se \texttt{bottom} pomera na jedno mesto ispred \texttt{mid}, u suprotnom pomeramo \texttt{top} na mestoiza \texttt{mid}.
+
+\lstinputlisting[language=Python, frame=single]{nedelje/10/kodovi/2.PatternMatchingWithSuffixArray.py}
+
+
+\subsection{Find Neighborhood}
+\label{findNeighborhood}
+
+
+Funkcija ima tri parametra, \texttt{suffix\_array}, \texttt{mid} i \texttt{pattern}. Povratna vrednost je lista pozicija na kojima počinje sekvenca \texttt{pattern}.
+
+Krećemo od središnjeg elementa i pomeramo se odozgo nadole i odozdo nagore dok su uspunjeni odgovarajući uslovi. 
+
+Za kretanje odozgo naniže bitno je da brojač ostane pozitivna vrednost, da dužina gornjeg elementa sufiksnog niza bude veća od dužine sekvence koju tražimo i da je prefiks dužine |pattern| gornje niske u sufiksnom nizu jednaka sekvenci \texttt{pattern}. 
+
+Za kretanje odozdo naviše uslovi su da brojač ne pređe dužinu niza, da je dužina donjeg elementa sufiksnog niza veća od dužine sekvence i da je prefiks dužine |pattern| donje niske u sufiksnom nizu jednaka sekvenci \texttt{pattern}.
+
+Kada su obe granice određene, postavljamo ih u petlji. Krećemo od gornje granice pomerene za 1 i idemo do donje. U listu pozicija (koja je inicijalno prazna) dodajemo razliku dužine sufiksnog niza i dužine elementa na poziciji \texttt{i}.
+
+Pre nego što vratimo listu, sortiramo je rastuće.
+
+\lstinputlisting[language=Python, frame=single]{nedelje/10/kodovi/2.1.FindNeighborhood.py}
+
+
+\subsection{Suffix Array Construction}
+\label{suffixArrayConstruction}
+
+Funkcija ima jedan parametar, \texttt{string}. Povratna vrdnost je sufiksni niz napravljen na osnovu niske \texttt{string}.
+
+Sufiksni niz na početku je prazna lista, a niski nadovezujemo '\$' na kraj. Nisku prolazimo pomoću indeksa \texttt{i}, a u svakoj iteraciji u sufiksni niz dodajemo podnisku koja počinje na poziciji \texttt{i}. Niz sortiramo i vraćamo iz funkcije.
+
+\lstinputlisting[language=Python, frame=single]{nedelje/10/kodovi/2.2.SuffixArrayConstruction.py}
+
+
+\subsubsection{Test primer}
+
+\texttt{string} = 'ananas'
+\\\texttt{suffix\_array = suffix\_array\_construction(string)} 
+\\\texttt{pattern} = 'nana'
+\\\texttt{found\_patterns} =
+
+
+U nastavku su opisane modifikacije ovih funkcija tako da rade kada umesto jedne niske imamo niz niski.
+
+\section{Pattern Matching With Suffix Array}
+
+Funkcija ima dva parametra, \texttt{suffix\_array} - sufiksni niz napravljen na osnovu teksta, i \texttt{pattern} - sekvenca koju tražimo u tekstu. Povratna vrednost je lista pozicija na kojima počinje sekvenca u tekstu.
+
+
+Obratiti pažnju da sufikni niz više nije niz niski već niz torki. Na prvom mestu nalazi se sufiks, na drugom je redni broj niske čiji je to sufiks, a na trećem je indeks na kom počinje sufiks u niski.
+
+Održavamo vrednosti \texttt{top}, koja kreće od pozicija 0, i \texttt{bottom}, koja kreće od pozicije |suffix\_array|-1. Dok važi da je \texttt{top} manji od \texttt{bottom} izračunavamo srednji element \texttt{mid}, kao srednju vrednost ove dve. 
+
+Ukoliko je dužina sufiksa središnjeg veća od dužine sekvence koju tražimo, onda proveravamo i da li je prefiks dužine |pattern| u središnjem sufiksu jednak sekvenci \texttt{pattern}. Ako jeste, vraćamo povratnu vrednost funkcije \texttt{find\_neighborhood} (\ref{findNeighborhoodM}). 
+
+Sledeći korak odnosi se na ažuriranje vrednosti za \texttt{top} i \texttt{bottom} kao u binarnoj pretrazi. Tako da, ako je sekvenca manja od središnjeg elementa sufiksnog niza, onda se \texttt{bottom} pomera na jedno mesto ispred \texttt{mid}, u suprotnom pomeramo \texttt{top} na mestoiza \texttt{mid}.
+
+\lstinputlisting[language=Python, frame=single]{nedelje/10/kodovi/3.PatternMatchingWithSuffixArrayM.py}
+
+
+\subsection{Find Neighborhood}
+\label{findNeighborhoodM}
+
+
+Funkcija ima tri parametra, \texttt{suffix\_array}, \texttt{mid} i \texttt{pattern}. Povratna vrednost je lista pozicija na kojima počinje sekvenca \texttt{pattern}.
+
+Krećemo od središnjeg elementa i pomeramo se odozgo nadole i odozdo nagore dok su uspunjeni odgovarajući uslovi. 
+
+Za kretanje odozgo naniže bitno je da brojač ostane pozitivna vrednost, da dužina niske gornjeg elementa sufiksnog niza bude veća od dužine sekvence koju tražimo i da je prefiks dužine |pattern| gornje niske u sufiksnom nizu jednaka sekvenci \texttt{pattern}. 
+
+Za kretanje odozdo naviše uslovi su da brojač ne pređe dužinu niza, da je dužina niske donjeg elementa sufiksnog niza veća od dužine sekvence i da je prefiks dužine |pattern| donje niske u sufiksnom nizu jednaka sekvenci \texttt{pattern}.
+
+Kada su obe granice određene, postavljamo ih u petlji. Krećemo od gornje granice pomerene za 1 i idemo do donje. U listu pozicija (koja je inicijalno prazna) dodajemo par indeksa - redni broj niske (tj. drugi element torke elementa sufiksnog niza) i indeks na kom počinje sufiks (tj. treći element torke elementa sufiksnog niza) elementa na poziciji \texttt{i}.
+
+Pre nego što vratimo listu, sortiramo je rastuće.
+
+\lstinputlisting[language=Python, frame=single]{nedelje/10/kodovi/3.1.FindNeighborhoodM.py}
+
+
+\subsection{Suffix Array Construction}
+\label{suffixArrayConstructionM}
+
+Funkcija ima jedan parametar, \texttt{strings}. Povratna vrdnost je sufiksni niz napravljen na osnovu niza niski \texttt{strings}.
+
+Sufiksni niz na početku je prazna lista, a gradićemo ga tako da elementi budu torke, a ne sami sufiksi. Jedna torka sadrži sufiks jedne niske iz niza, redni broj te niske i poziciju na kojoj počinje sufiks u niski.
+
+Redom indeksiramo elemente niza (indeksom \texttt{s}), i svakom na kraj nadovezujemo '\$'. Zatim, nisku prolazimo pomoću indeksa \texttt{i}, a u svakoj iteraciji u sufiksni niz dodajemo torku koja sadrži podnisku niske koja počinje na poziciji \texttt{i}, poziciju niske u nizu tj. \texttt{s} i indeks na kom počinje sufiks, odnosno, \texttt{i} . Niz sortiramo i vraćamo iz funkcije.
+
+\lstinputlisting[language=Python, frame=single]{nedelje/10/kodovi/3.2.SuffixArrayConstructionM.py}
+
+
+
+\subsubsection{Test primer}
+
+\noindent\texttt{strings} = ['ananas', 'and', 'antenna', 'banana', 'bandana', 'nab', 'nana', 'pan']
+\\\texttt{suffix\_array = suffix\_array\_construction(strings)}
+\\\texttt{pattern} = 'an'
+\\\texttt{found\_patterns} =
+
+
+\section{BW Matching}
+
+Funkcija ima tri parametra, \texttt{fisrt\_column}, \texttt{last\_column} i \texttt{pattern}. Povratna vrednost je pozicija na kojoj počinje sekvenca \texttt{pattern} u tekstu.
+
+Održavamo vrednosti \texttt{top}, koja kreće od pozicija 0, i \texttt{bottom}, koja kreće od pozicije |last\_column|-1. Petlja se vrti dok važi da je \texttt{top} manji od \texttt{bottom}. Ako sekvenca ima još karaktera, izdvajamo poslenji simbol u \texttt{symbol} a \texttt{pattern} skraćujemo za posledni karakter. Izdvajamo podskup poslednje kolone na intervalu \texttt{[top, bottom]} u \texttt{subset}. 
+
+Metodom \texttt{index} proveravamo da li \texttt{subset} sadrži karakter \texttt{symbol} (funkcija vraća indeks, ako pronađe element, odnosno 0, ako ga ne nađe). 
+
+Ukoliko ga sadrži, želimo da odredimo \texttt{top\_index} i \texttt{bottom\_index}, koje incijalizujemo na -1. Petljom prolazimo poslednju kolonu, od \texttt{top} do \texttt{bottom} + 1. Ukoliko je \texttt{symbol} jednak karakteru poslednje kolone, menjamo \texttt{top\_index} i \texttt{bottom\_index}. Gornji indeks menjamo samo ako već nije dobio neku vrednost, odnosno, ako i dalje ima vrednost -1. U tom slučaju ga postavljamo na vrednost indeksa petlje, a donji indeks u svakom slučaju dobija tu vrednost.
+
+Sada želimo da izbrojimo koliko se karaktera u poslednjoj koloni poklapa sa \texttt{symbol}, do gornjeg indeksa (\texttt{top\_count}) i do donjeg indeksa (\texttt{bottom\_count}). To vršimo jednostavnim prolaskom poslednje kolone i upoređivanjem karaktera.
+
+Treba još ažurirati \texttt{top} i \texttt{bottom}. Oba ažuriramo pomoću funkcije \texttt{last\_to\_first} (\ref{lastToFirst}), s tim da prosleđujemo različite elemente poslednje kolone i brojače. 
+
+Ukoliko \texttt{subset} ipak ne sadrži \texttt{symbol}, vraćamo -1.
+
+Ukoliko Nema više karaktera u sekvenci \texttt{pattern}, vraćamo razliku \texttt{bottom} i \texttt{top} uvećanu za jedan.
+
+
+\lstinputlisting[language=Python, frame=single]{nedelje/10/kodovi/4.BWMatching.py}
+
+\subsection{Last To First}
+\label{lastToFirst}
+
+Funkcija ima tri parametra, \texttt{first\_column}, karakter \texttt{c} i broj pojavljivanja tog karaktera u poslednjoj koloni \texttt{count}. Povratna vrednost je poslednji indeks na kom počinje taj karakter u prvoj koloni.
+
+Dakle, prolazimo redom sve karaktere prve kolone. Ukoliko je \texttt{c} jednak karakteru prve kolone na poziciji \texttt{i} onda u zavisnosti od broja pojavljivanja radimo sledeće. Ako je broj pojavljivanja jedan 1, vraćamo indeks \texttt{i}. Inače, umanjujemo brojač za jedan.
+
+
+\lstinputlisting[language=Python, frame=single]{nedelje/10/kodovi/4.1.LastToFirst.py}
+
+
+\subsection{BWT}
+\label{BWT}
+
+Funkcija ima jedan parametar, nisku \texttt{s}. Povratna vrednost poslednja kolona matrice permutacija niske \texttt{s}.
+
+Polazimo od prazne matrice, koja je predstavljena kao niz niski. Na kraj niske \texttt{s} nadovezujemo karakter '\$'. Petlja se izvršava \texttt{|s|} puta. U svakoj iteraciji, u matricu andovezujemo nisku \texttt{s} a zatim je ciklično pomeramo za jedno mesto u levo. Nakon petlje, sortiramo matricu i vraćamo listu poslednjih karaktera iz svakog reda matrice, odnosno, poslednju kolonu.
+
+\lstinputlisting[language=Python, frame=single]{nedelje/10/kodovi/4.2.BWT.py}
+
+
+\subsubsection{Test primer}
+
+\noindent\texttt{s} = 'panamabananas'
+\\\texttt{last\_column = BWT(s)}
+\\\texttt{pattern} = 'ana'
+\\\texttt{first\_column = last\_column[:]}
+\\\texttt{found\_patterns} = 
+

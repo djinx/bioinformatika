@@ -1,21 +1,3 @@
-\section{HMM}
-
-Funkcija ima dva argumenta, listu niski \texttt{strings\_pos} i \texttt{string\_neg} (pozitivno i negativno, kao kod primera sa bacanjem pristrasnog, što je označavalo negativne niske, i fer novčića, što je označavalo pozitivne niske). Povratna vrednost je HMM dijagram.
-
-HMM na početku je prazna mapa. Ključevi u mapi su niske sastavljene od karaktera i znaka '+' ili '-', a vrednosti su mape. Svaka od tih mapa sadrži tri ključa: \texttt{'state'} - 1 -pozitivni, 0 - negativni; \texttt{'nucleotide'} i \texttt{'transitions'} - mapa prelazaka (ključevi su karakteri, a vrednosti su brojevi).
-
-Prvo prolazimo listu pozitivnih stringova, element po element, a onda i negativne. \footnote{Pošto je posao za pozitivne i negativne većinom isti, opisaćemo obe petlje zajedno, a delove koji se razlikuju opisujemo u zagradama za negativne niske.} Svaku nisku prolazimo pomoću indeksa \texttt{i}. Pamtimo dve promenljive, \texttt{c\_prev\_state}, koja dobija vrednost karaktera na prethodnoj poziciji na koji nadovezujemo znak '+' (odnosno, '-' za negativne niske), i \texttt{c\_curr} koja označava trenutni karakter u niski.
-
-Ukoliko se prethodni karakter ne nalazi u \texttt{HMM} dodajemo ga sa praznom mapom. Zatim mu inicijalizujemo \texttt{state} na 1 (odnosno, 0 za negativne). Vrednost za ključ \texttt{nucleotide} je prethodni karakter niske, a \texttt{transition} dobija praznu mapu.
-
-Ukoliko se trenutni karakter ne nalazi u tranzicijama \texttt{c\_prev\_state}, dodajemo ga i inicijalizujemo mu vrednost na 0. U svakom slučaju ćemo uvećati tu vrednost za 1.
-
-Sada prolazimo sve ključeve u \texttt{HMM}. Računamo sumu vrednosti svih tranzicija. Zatim, vrednost svake tranzicije delimo tom sumom i množimo sa 0.98. Pre prelaska na sledeću iteraciju, dodajemo još jedan element u mapu, a to je ('0', 0.02).
-
-
-
-\lstinputlisting[language=Python, frame=single]{nedelje/11/kodovi/1.HMM.py}
-
 \section{Viterbi}
 
 
@@ -31,21 +13,118 @@ Prvo, postavljamo promenljive \texttt{max\_prev} na -1 i \texttt{max\_prev\_stat
 
 Još uvek obrađujemo treći slučaj, a sledeći korak jeste da odredimo vrednost trenutnog stanja. Promenljiva \texttt{curr\_state} dobija vrednost proizvoda  vrednosti prethodnog stanja \texttt{i-1}-og elementa liste \texttt{matrix} sa \texttt{state\_change\_prob} i \texttt{transition\_prob}. Ukoliko je trenutno stanje veće od \texttt{max\_prev}, ažuriramo maksimume, tako da \texttt{max\_prev} dobije vrednost \texttt{curr\_state}, a \texttt{max\_prev\_state} dobije vrednost \texttt{prev\_state}.
 
-Vrednost za ključ \texttt{state} \texttt{i}-tog elementa liste dobija vrednost \texttt{max\_prev} i ostaje još da uporedimo \texttt{max\_prev} i \texttt{max\_transition\_prob}. Ukoliko je veće ažuriramo maksimume tako da \texttt{max\_transition\_prob} dobije vrednost \texttt{max\_prev}, a \texttt{max\_transition\_state} dobije vrednost \texttt{max\_prev\_state}.
+Nakon petlje, vrednost za ključ \texttt{state} \texttt{i}-tog elementa liste dobija vrednost \texttt{max\_prev} i ostaje još da uporedimo \texttt{max\_prev} i \texttt{max\_transition\_prob}. Ukoliko je veće ažuriramo maksimume tako da \texttt{max\_transition\_prob} dobije vrednost \texttt{max\_prev}, a \texttt{max\_transition\_state} dobije vrednost \texttt{max\_prev\_state}.
 
 Sada su obrađeni svi karakteri niske i treba da odredimo završno stanje. Promenljiva \texttt{max\_end} dobija vrednost -1, a \texttt{max\_end\_state} je prazna niska. Prolazimo sva stanja poslednjeg elementa liste i tražimo ono sa najvećom vrednošću.
 
 Na putanju nadovezujemo \texttt{max\_end\_state} i vraćamo putanju.
 
+\subsection{HMM}
+
+Funkcija ima dva argumenta, listu niski \texttt{strings\_pos} i \texttt{string\_neg} (pozitivno i negativno, kao kod primera sa bacanjem pristrasnog, što je označavalo negativne niske, i fer novčića, što je označavalo pozitivne niske). Povratna vrednost je HMM dijagram.
+
+HMM na početku je prazna mapa. Ključevi u mapi su niske sastavljene od karaktera i znaka '+' ili '-', a vrednosti su mape. Svaka od tih mapa sadrži tri ključa: \texttt{'state'} - 1 -pozitivni, 0 - negativni; \texttt{'nucleotide'} i \texttt{'transitions'} - mapa prelazaka (ključevi su karakteri, a vrednosti su brojevi).
+
+Prvo prolazimo listu pozitivnih stringova, element po element, a onda i negativne. \footnote{Pošto je posao za pozitivne i negativne većinom isti, opisaćemo obe petlje zajedno, a delove koji se razlikuju opisujemo u zagradama za negativne niske.} Svaku nisku prolazimo pomoću indeksa \texttt{i}, počevši od poziicje 1. Pamtimo dve promenljive, \texttt{c\_prev\_state}, koja dobija vrednost karaktera na prethodnoj poziciji na koji nadovezujemo znak '+' (odnosno, '-' za negativne niske), i \texttt{c\_curr} koja označava trenutni karakter u niski.
+
+Ukoliko se prethodni karakter ne nalazi u \texttt{HMM} dodajemo ga sa praznom mapom. Zatim mu inicijalizujemo \texttt{state} na 1 (odnosno, 0 za negativne). Vrednost za ključ \texttt{nucleotide} je prethodni karakter niske, a \texttt{transition} dobija praznu mapu.
+
+Ukoliko se trenutni karakter ne nalazi u tranzicijama \texttt{c\_prev\_state}, dodajemo ga i inicijalizujemo mu vrednost na 0. U svakom slučaju ćemo uvećati tu vrednost za 1.
+
+Nakon što su obrađene obe liste niski, prolazimo sve ključeve u \texttt{HMM}. Računamo sumu vrednosti svih tranzicija. Zatim, vrednost svake tranzicije delimo tom sumom i množimo sa 0.98. Pre prelaska na sledeću iteraciju, dodajemo još jedan element u mapu, a to je ('0', 0.02).
+
 
 \lstinputlisting[language=Python, frame=single]{nedelje/11/kodovi/2.Viterbi.py}
 
 
-\subsection{Test primer}
+
+\subsubsection{Test primer}
 
 \noindent\texttt{strings\_pos} = [
 \\\indent 'ACACAGACGCACA',
 \\\indent 'CACATAGACAGGCATACACA', \\\indent 'AAATACAGTATCTTTGCACTCCCGGAGTGCGG'\\]
 \\\texttt{strings\_neg} = [\\\indent 'CGAGCGTGTGAGTGAGAGATGAG', \\\indent 'GTGGAACAGTAGGTAGGAGAGTG', \\\indent 'AAATACAGTATCTTTGCACTCCCGGAGTGCGG']
-\\\texttt{model = HMM(strings\_pos, strings\_neg)}
-\\\texttt{path} = 
+\\\texttt{model = HMM(strings\_pos, strings\_neg)} = 
+\begin{verbatim}
+{
+    'A+': 
+        {
+        '0': 0.02,
+        'nucleotide': 'A',
+        'state': 1,
+        'transitions': {
+            'A': 0.09333333333333332,
+            'C': 0.4666666666666666,
+            'G': 0.2333333333333333,
+            'T': 0.18666666666666665}
+        },
+    'A-': {
+        '0': 0.02,
+        'nucleotide': 'A',
+        'state': 0,
+        'transitions': {
+            'A': 0.13999999999999999,
+            'C': 0.13999999999999999,
+            'G': 0.5599999999999999,
+            'T': 0.13999999999999999}
+        },
+    'C+': {
+        '0': 0.02,
+        'nucleotide': 'C',
+        'state': 1,
+        'transitions': {
+            'A': 0.6189473684210526,
+            'C': 0.1031578947368421,
+            'G': 0.15473684210526314,
+            'T': 0.1031578947368421}
+        },
+    'C-': {
+        '0': 0.02,
+        'nucleotide': 'C',
+        'state': 0,
+        'transitions': {
+            'A': 0.2672727272727273,
+            'C': 0.1781818181818182,
+            'G': 0.3563636363636364,
+            'T': 0.1781818181818182}
+        },
+    'G+': {
+        '0': 0.02,
+        'nucleotide': 'G',
+        'state': 1,
+        'transitions': {
+            'A': 0.245,
+            'C': 0.32666666666666666,
+            'G': 0.245,
+            'T': 0.16333333333333333}
+        },
+    'G-': {
+        '0': 0.02,
+        'nucleotide': 'G',
+        'state': 0,
+        'transitions': {
+            'A': 0.36296296296296293,
+            'C': 0.10888888888888888,
+            'G': 0.18148148148148147,
+            'T': 0.32666666666666666}
+        },
+    'T+': {
+        '0': 0.02,
+        'nucleotide': 'T',
+        'state': 1,
+        'transitions': {'A': 0.392, 'C': 0.196, 'G': 0.196, 'T': 0.196}
+        },
+    'T-': {
+        '0': 0.02,
+        'nucleotide': 'T',
+        'state': 0,
+        'transitions': {'A': 0.245, 'C': 0.1225, 'G': 0.49, 'T': 0.1225}
+        }
+    }
+\end{verbatim}
+
+\noindent\texttt{path} = C-T-C+A+C+G+A-G-A-G-C-C-A+C+C+
+
+\newpage
+
+\lstinputlisting[language=Python, frame=single]{nedelje/11/kodovi/1.HMM.py}

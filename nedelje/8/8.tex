@@ -1,6 +1,6 @@
 \section{Greedy Sorting}
 
-Funkcija ima jedan parametra, permutaciju blokova \texttt{P} koje treba sortirati rastuće tako da svi budu pozitivne orijentacije. Povratna vrednost je broj obrtanja koji je bio potreban da bi se došlo do odgovarajućeg poretka. Pored toga, funkcija ispisuje izgled permutacije na kraju svake iteracije.
+Funkcija ima jedan parametar, permutaciju blokova \texttt{P} koje treba sortirati rastuće tako da svi budu pozitivne orijentacije. Povratna vrednost je broj obrtanja koji je bio potreban da bi se došlo do odgovarajućeg poretka. Pored toga, funkcija ispisuje izgled permutacije na kraju svake iteracije.
 
 Ideja je da redom svaki blok smeštamo na njegovo mesto. Prvo 1. blok treba smestiti na prvo mesto i obezbediti da bude pozitivno orijentisan. Zatim, smeštamo drugi blok, pa treći i tako redom dok ne smestimo sve na odgovarajuća mesta.
 
@@ -33,11 +33,11 @@ Podsetimo se da rotacija obrće blokove iz intervala pri čemu im menja i orijen
 \subsubsection{Test primer 1}
 
 \noindent \texttt{P} = [+1,-7,+6,-10,+9,-8,+2,-11,-3,+5,+4]
-\\\texttt{approx\_reversal\_distance} =
+\\\texttt{approx\_reversal\_distance} = 11
 
-\subsubsection{Test primer 1}
+\subsubsection{Test primer 2}
 \noindent \texttt{P} = [-2,-5,3,4,1]
-\\\texttt{approx\_reversal\_distance} =
+\\\texttt{approx\_reversal\_distance} = 9
 
 
 \section{Chromosome To Cycle}
@@ -52,7 +52,7 @@ Polazimo od liste nula dimenzije $2\cdot$|\texttt{chromosome}|. Obrađujemo jeda
 \subsection{Test primer}
 
 \noindent\texttt{P} = [1,-2,-3,4]
-\\\texttt{nodes} = 
+\\\texttt{nodes} = [1, 2, 4, 3, 6, 5, 7, 8]
 
 \section{Cycle To Chromosome}
 \label{cycleToChrom}
@@ -61,14 +61,14 @@ Funkcija ima jedan parametar, listu čvorova \texttt{nodes} ciklusa od kog treba
 
 Pošto svakom bloku hromozoma odgovaraju dva čvora, ovde ćemo koristiti samo pola niza. Lista blokova \texttt{chromosomes} je upola manje dimenzije od liste čvorova i inicijalno sadrži smao vrednosti 0.
 
-Indeks u petlji takođe ide do pola dužine liste \texttt{nodes}. Ukoliko je čvor na parnoj poziciji manji od onog na neparnoj, onda je odgovarajući blok pozitivan i njegovu vrednost ćemo dobiti polovljenjem vrednosti neparnog čvora. U suprotnom, blok je negativan i njegova vrednost dobija se polovljenjem vrednosti negativnog parnog čvora.
+Indeks u petlji takođe ide do pola dužine liste \texttt{nodes}. Ukoliko je čvor na parnoj poziciji manji od onog na neparnoj, onda je odgovarajući blok pozitivan i njegovu vrednost ćemo dobiti polovljenjem vrednosti neparnog čvora. U suprotnom, blok je negativan i njegova vrednost dobija se polovljenjem negativne vrednosti parnog čvora.
 
 \lstinputlisting[language=Python, frame=single]{nedelje/8/kodovi/3.CycleToChromosome.py}
 
 \subsection{Test primer}
 
 \noindent\texttt{nodes} = [1, 2, 4, 3, 6, 5, 7, 8]
-\\\texttt{chromosome} = 
+\\\texttt{chromosome} = [1, -2, -3, 4]
 
 
 \section{Shortest Rearrangement Scenario}
@@ -79,7 +79,7 @@ Određujemo crvene i plave grane (funkcijom \texttt{colored\_edges}, \ref{colore
 
 Prolazimo sve crvene grane, i ako naiđemo na čvor \texttt{j} među ulaznim ili izlaznim čvorovima, onda će \texttt{i} dobiti vrednost suprotnog čvora. Takođe, ako naiđemo na \texttt{i\_p} među izlaznim čvorovima, onda će \texttt{j\_p} dobiti vrednost odgovarajućeg ulaznog čvora.
 
-Dakle pronašli smo čvorove takve da su povezani \texttt{i} i \texttt{j}, \texttt{i\_p} i \texttt{j\_p}, a iz \texttt{Q} smo izabrali granu koja povezuje \texttt{j} i \texttt{i\_p} koji. Iz crvenih grana uklanjamo grane koje povezuju \texttt{i} i \texttt{j}, \texttt{i\_p} i \texttt{j\_p} (ima ih po dve, po jedna za svaki pravac). Dodajemo grane koje će povezivati \texttt{j} sa \texttt{i\_p}, i \texttt{j\_p} sa \texttt{i} (opet, po dve za oba slučaja). U ovom trenutku povećavamo broj prekida.
+Dakle pronašli smo čvorove takve da su povezani \texttt{i} i \texttt{j}, \texttt{i\_p} i \texttt{j\_p}, a iz \texttt{Q} smo izabrali granu koja povezuje \texttt{j} i \texttt{i\_p}. Iz crvenih grana uklanjamo grane koje povezuju \texttt{i} i \texttt{j}, \texttt{i\_p} i \texttt{j\_p} (ima ih po dve, po jedna za svaki pravac). Dodajemo grane koje će povezivati \texttt{j} sa \texttt{i\_p}, i \texttt{j\_p} sa \texttt{i} (opet, po dve za oba slučaja). U ovom trenutku povećavamo broj prekida.
 
 
 
@@ -92,7 +92,7 @@ Dakle pronašli smo čvorove takve da su povezani \texttt{i} i \texttt{j}, \text
 
 Funkcija ima jedan parametar, permutaciju \texttt{P}. Povratna vrednost je lista obojenih grana.
 
-Krećemo od prazne liste. Prolazimo redom sve hromozome u \texttt{P}. Svaki ćemo prvo pretvoriti u ciklus. Zatim prolazimo čvorove (do pola dužine, ili do dužine hromozoma) i u listu grana dodajemo dve grane, pošto su obojene grane neusmerene, a naš graf je usmeren. Grane sadrži neparan čvor i paran čvor po modulu broja čvorova.
+Krećemo od prazne liste. Prolazimo redom sve hromozome u \texttt{P}. Svaki ćemo prvo pretvoriti u ciklus. Zatim prolazimo čvorove (do pola dužine, ili do dužine hromozoma) i u listu grana dodajemo dve grane, pošto su obojene grane neusmerene, a naš graf je usmeren. Grane sadrži neparan čvor i paran čvor po modulu broja čvorova (indeks parnog čvora određujemo kao 2*j+2, pa moramo računati po modulu).
 
 \lstinputlisting[language=Python, frame=single]{nedelje/8/kodovi/4.1.ColoredEdges.py}
 
@@ -101,7 +101,7 @@ Krećemo od prazne liste. Prolazimo redom sve hromozome u \texttt{P}. Svaki ćem
 
 Funkcija ima dva parametra, \texttt{P} i \texttt{Q}. Povratna vrednost je boolean tipa.
 
-Prolazimo sve grane u \texttt{P}. Ukoliko postoji braj jedna grana takva da ne postoji ni ta grana ni njena inverzija u \texttt{Q}, vratiti \texttt{True}. U suprotnom, ako su sve grane iz \texttt{P} prisutne u \texttt{Q}, vraćamo \texttt{False}.
+Prolazimo sve grane (kao par čvorova) u \texttt{P}. Ukoliko postoji bar jedna grana takva da ne postoji ni ta grana ni njena inverzija u \texttt{Q}, vratiti \texttt{True}. U suprotnom, ako su sve grane iz \texttt{P} prisutne u \texttt{Q}, vraćamo \texttt{False}.
 
 \lstinputlisting[language=Python, frame=single]{nedelje/8/kodovi/4.2.HasNontrivialCycle.py}
 
@@ -120,14 +120,14 @@ Petljom prolazimo sve grane iz \texttt{Q}. Vraćamo prvu granu koja se ne nalazi
 
 \noindent\texttt{P} =  [1,-2,-3,4]
 \\\texttt{Q} = [1, 2, 3, -4]
-\\\texttt{num\_of\_breaks} =
+\\\texttt{num\_of\_breaks} = 3
 
 
 \section{Two Break On Genome}
 
 Funkcija ima pet parametara, \texttt{P} i čvorove \texttt{i}, \texttt{i\_p}, \texttt{j} i \texttt{j\_p}. Povratna vrednost je graf dobijen genoma \texttt{P}.
 
-Prvo određujemo crne i crvene grane nadovezivanjem povratnih vrednosti funkcija \texttt{black\_edges} (\ref{blackEdges}) i \texttt{colored\_edges} (\ref{coloredEdges}). Zatim prespajamo čvorove funkcijom \texttt{two\_break\_on\_genome\_graph} (\ref{twoBreakOnGenomeGraph}). Na kraju pravimo graf funkcijom \texttt{graph\_to\_genome} (\ref{graphToGenome}). 
+Prvo određujemo crne i crvene grane nadovezivanjem povratnih vrednosti funkcija \texttt{black\_edges} (\ref{blackEdges}) i \texttt{colored\_edges} (\ref{coloredEdges}). Zatim prespajamo čvorove funkcijom \texttt{two\_break\_on\_genome\_graph} (\ref{twoBreakOnGenomeGraph}). Na kraju pravimo genom od grafa funkcijom \texttt{graph\_to\_genome} (\ref{graphToGenome}). 
 
 \lstinputlisting[language=Python, frame=single]{nedelje/8/kodovi/5.TwoBreakOnGenome.py}
 
@@ -136,7 +136,7 @@ Prvo određujemo crne i crvene grane nadovezivanjem povratnih vrednosti funkcija
 
 Funkcija ima jedan parametra, \texttt{P}. Povratna vrednost je lista crnih grana.
 
-Polazimo od prazne liste grana i indeksa 0. Petlja se izvršava dok nismo obradili sve čvorove. Ukoliko je vrednost trenutnog čvora manja od vrednosti sledećeg, crna grana je usmerena od trenutnog ka narednom, u suprotnom je usmerena obrnuto. Indeks uvećavamo sa korakom 2.
+Hromozom pretvaramo u listu čvorova (funkcijom chromosome\_to\_cycle, \ref{chromToCycle}). Polazimo od prazne liste grana i indeksa 0. Petlja se izvršava dok nismo obradili sve čvorove. Ukoliko je vrednost trenutnog čvora manja od vrednosti sledećeg, crna grana je usmerena od trenutnog ka narednom, u suprotnom je usmerena obrnuto. Indeks uvećavamo sa korakom 2.
 
 
 \lstinputlisting[language=Python, frame=single]{nedelje/8/kodovi/5.1.BlackEdges.py}
@@ -147,7 +147,7 @@ Polazimo od prazne liste grana i indeksa 0. Petlja se izvršava dok nismo obradi
 
 Funkcija ima 5 parametara, listu grana \texttt{genome\_graph} i čvorove \texttt{i}, \texttt{i\_p}, \texttt{j} i \texttt{j\_p} koje treba prespojiti. Povratna vrednost je lista novih grana.
 
-Polazimo od nove, prazne, liste grana. Prolazimo sve grane iz liste i sve ih dodajemo u novu listu, osim grana \texttt{(i, i\_p)} i \texttt{(j, j\_p)}. Kada su obrađene sve grane, dodajemo još dve , \texttt{(i, j)} i \texttt{(i\_p, j\_p)}.
+Polazimo od nove, prazne, liste grana. Prolazimo sve grane iz liste \texttt{genome\_graph} i sve ih dodajemo u novu listu, osim grana \texttt{(i, i\_p)} i \texttt{(j, j\_p)}. Kada su obrađene sve grane, dodajemo još dve , \texttt{(i, j)} i \texttt{(i\_p, j\_p)}.
 
 \lstinputlisting[language=Python, frame=single]{nedelje/8/kodovi/5.2.TwoBreakOnGenomeGraph.py}
 
@@ -157,7 +157,7 @@ Polazimo od nove, prazne, liste grana. Prolazimo sve grane iz liste i sve ih dod
 
 Funkcija ima jedan parametar, listu grana \texttt{genome\_graph}. Povratna vrednost je genom napravljen od dobijenog grafa.
 
-Polazimo od praznog genoma \texttt{P} i prazne liste čvorova \texttt{nodes}. Prvo treba odrediti sve čvorove ovog grafa. To činimo prolaskom kroz listu grana i dodavanjem ova njena kraja u listu čvorova.
+Polazimo od praznog genoma \texttt{P} i prazne liste čvorova \texttt{nodes}. Prvo treba odrediti sve čvorove ovog grafa. To činimo prolaskom kroz listu grana i dodavanjem oba njena kraja u listu čvorova.
 
 Zatim, poslednji čvor iz liste treba premestiti na početak. Pravimo dve liste. Prva sadrži samo poslednji čvor, druga sadrži ostatak. U listu \texttt{nodes} smeštamo rezultat nadovezivanja druge liste na prvu.
 

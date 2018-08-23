@@ -2,12 +2,12 @@
 
 Funkcija ima dva parametra, \texttt{dna} - niz niski koje čine nukleotidnu sekvencu, i \texttt{k} - željena dužina . Povratna vrednost je niska \texttt{median}.
 
-Tražimo nisku dužine \texttt{k} koja je najmanje udaljena od svih iz \texttt{dna}. Uzimamo u obzir svih $4^k$ kombinacija i proveravamo koja najmanje udaljenda od svih. Za određivanje niske koristi se funkcija \texttt{number\_to\_pattern} (\ref{numberToPattern}). Zatim, za dobijenu nisku određujemo ukupno rastojanje od svih sekvenci iz \texttt{dna} (funkcijom \texttt{d}). Potrebno je još proveriti da li je to rastojanje trenutni minimum i, ako jeste, ažurirati minimalno rastojanje i nisku \texttt{meadian}.
+Tražimo nisku dužine \texttt{k} koja je najmanje udaljena od svih iz \texttt{dna}. Uzimamo u obzir svih $4^k$ kombinacija i proveravamo koja najmanje udaljenda od svih. Za određivanje niske koristi se funkcija \texttt{number\_to\_pattern} (\ref{numberToPattern}). Zatim, za dobijenu nisku određujemo ukupno rastojanje od svih sekvenci iz \texttt{dna} (funkcijom \texttt{d}, \ref{d}). Potrebno je još proveriti da li je to rastojanje trenutni minimum i, ako jeste, ažurirati minimalno rastojanje i nisku \texttt{meadian}.
 
 \lstinputlisting[language=Python, frame=single]{nedelje/3/kodovi/1.MedianString.py}
 
 \subsection{D}
-
+\label{d}
 Funkcija ima dva parametra, \texttt{pattern} - kandidat za median, i \texttt{dna} - niz niski koje čine nukleotidnu sekvencu. Povratna vrednost je suma Hamingovih rastojanja između niske \texttt{pattern} i svih sekvenci iz \texttt{dna}.
 
 Prolazimo jednu po jednu sekvencu iz \texttt{dna} i za svaku određujemo najmanje Hamingovo rastojanje u odnosu na \texttt{pattern}. Ideja je da u toj sekvenci tražimo podsekvencu, dužine niske \texttt{pattern} (u kodu, to je vrednost \texttt{k}), koja se najbolje poklapa sa niskom \texttt{pattern} odnosno, koja ima najmanje hamingovo rastojanje (\ref{hammingDistance}) u odnosu na nisku \texttt{pattern}. Nakon što je određeno najmanje rastojanje za jednu sekvencu, ono se dodaje na ukupan zbir rastojanja, što je povratna vrednost ove funkcije.
@@ -18,24 +18,24 @@ Prolazimo jednu po jednu sekvencu iz \texttt{dna} i za svaku određujemo najmanj
 
 \subsubsection{Test primer}
 \noindent\texttt{dna} = [ \\
-'GTAGATGTCATTAGCATGCAC', \\
-'CCTAGCCACTCTGCCATGTCG', \\
-'AACTCGTGCATTCTACGACTG', \\
-'AAACTTTCCGGATCTTCATAC', \\
-'CTACATCATCGAAGGCTACGC' \\
+\indent'GTAGATGTCATTAGCATGCAC', \\
+\indent'CCTAGCCACTCTGCCATGTCG', \\
+\indent'AACTCGTGCATTCTACGACTG', \\
+\indent'AAACTTTCCGGATCTTCATAC', \\
+\indent'CTACATCATCGAAGGCTACGC' \\
 ]
 
 \noindent \texttt{k} = 4
-\\\texttt{median} =
+\\\texttt{median} = 'TCAT'
 
 
 \section{Greedy Motif Search}
 
 Funkcija ima tri parametra, \texttt{dna} - niz sekvenci, \texttt{k} - dužina motiva, i \texttt{t} - broj sekvenci u \texttt{dna}. Povratna vrednost je skup najboljih motiva.
 
-Inicijalno, \texttt{best\_motifs} sadrži prefikse svih niski iz \texttt{dna} dužine \texttt{k}. Pored najboljih motiva, pamtimo i trenutno nabolji (najmanji) skor, koji se računa koršćenjem funkcije \texttt{score}. 
+Inicijalno, \texttt{best\_motifs} sadrži prefikse svih niski iz \texttt{dna} dužine \texttt{k}. Pored najboljih motiva, pamtimo i trenutno nabolji (najmanji) skor, koji se računa koršćenjem funkcije \texttt{score} (\ref{score}). 
 
-Polazimo od prve sekvence u nizu \texttt{dna} iz koje ćemo izdvajati podniske dužine \texttt{k}. Čuvamo skup motiva, a prvi motiv biće podniska dužine \texttt{k} u tekućoj iteraciji. Dakle, indeksiramo prvu nisku i u svakoj iteraciji izdvajamo podniske dužine \texttt{k}. Pored toga, u svakoj iteraciji iz preostalih \texttt{t} - 1 sekvenci izdvajamo podniske dužine \texttt{k} koje su najverovatnije (to određuje funkcija \texttt{most\_probable\_kmer}) u odnosu na matricu \texttt{profile}. Određujemo profil na osnovu motiva iz prethodnih iteracija (a dobijamo ga kao povratnu vrednost funkcije \texttt{profile}), a onda i najverovatniju podnisku. Najverovatniju podnisku dodajemo u skup motiva i on se koristi u narednoj iteraciji za pronalaženje sledećeg motiva. Kada su određeni svi motivi u tekućoj iteraciji, računa se trenutni skor i, ukoliko je bolji od trenutnog najboljeg, ažuriramo najbolji skor i motive.
+Polazimo od prve sekvence u nizu \texttt{dna} iz koje ćemo izdvajati podniske dužine \texttt{k}. Čuvamo skup motiva, a prvi motiv biće podniska dužine \texttt{k} u tekućoj iteraciji. Dakle, indeksiramo prvu nisku i u svakoj iteraciji izdvajamo podniske dužine \texttt{k}. Pored toga, u svakoj iteraciji iz preostalih \texttt{t} - 1 sekvenci izdvajamo podniske dužine \texttt{k} koje su najverovatnije (to određuje funkcija \texttt{most\_probable\_kmer}, \ref{mostProbableKmer}) u odnosu na matricu \texttt{profile}. Određujemo profil na osnovu motiva iz prethodnih iteracija (a dobijamo ga kao povratnu vrednost funkcije \texttt{profile\_from\_motifs}, \ref{profileFromMotifs}), a onda i najverovatniju podnisku. Najverovatniju podnisku dodajemo u skup motiva i on se koristi u narednoj iteraciji za pronalaženje sledećeg motiva. Kada su određeni svi motivi u tekućoj iteraciji, računa se trenutni skor i, ukoliko je bolji od trenutnog najboljeg, ažuriramo najbolji skor i motive.
 
 
 \lstinputlisting[language=Python, frame=single]{nedelje/3/kodovi/2.GreedyMotifSearch.py}
@@ -66,14 +66,14 @@ Zbog Laplasovog pravila, matrica profila inicijalno je popunjena jedinicama. U p
 \subsection{Most Probable Kmer}
 \label{mostProbableKmer}
 
-Funkcija ima tri parametra, \texttt{dna\_string}, \texttt{profile} i \texttt{k}. Povratna vrednost funkcije je najverovatnija podniska niske \texttt{dna\_string} dužine \texttt{k} u odnosu na amtricu profila.
+Funkcija ima tri parametra, \texttt{dna\_string}, \texttt{profile} i \texttt{k}. Povratna vrednost funkcije je najverovatnija podniska niske \texttt{dna\_string} dužine \texttt{k} u odnosu na matricu profila.
 
-Iniciijalno, \texttt{best\_kmer} je prazna niska, a \texttt{best\_probability} je negativna vrednost. Prolazimo sve podniske dužine \texttt{k} i za svaku računamo verovatnoću (funkcijom \texttt{probability}). Ukoliko je ta verovatnoća veća od trenutno najbolje, ažuriramo najbolju podnisku i verovatnoću.
+Iniciijalno, \texttt{best\_kmer} je prazna niska, a \texttt{best\_probability} je negativna vrednost. Prolazimo sve podniske dužine \texttt{k} i za svaku računamo verovatnoću (funkcijom \texttt{probability}, \ref{probability}). Ukoliko je ta verovatnoća veća od trenutno najbolje, ažuriramo najbolju podnisku i verovatnoću.
 
 \lstinputlisting[language=Python, frame=single]{nedelje/3/kodovi/2.3.MostProbableKmer.py}
 
 
-\subsubsection{Probability}
+\subsection{Probability}
 \label{probability}
 
 Funkcija ima dva parametra, \texttt{pattern} i \texttt{profile}. Funkcija vraća verovatnoću pojave \texttt{pattern} sekvence u odnosu na zadati profil. Ukupna verovanoća dobija se kao proizvod odgovarajućih vrednosti iz matrice profil.
@@ -85,23 +85,24 @@ Inicijalno, verovatnoća je jednaka 1. Za svaki karakter iz sekvence \texttt{pat
 
 \subsubsection{Test primer}
 \noindent\texttt{dna} = [ \\
-'GTAGATGTCATTAGCATGCAC', \\
-'CCTAGCCACTCTGCCATGTCG', \\
-'AACTCGTGCATTCTACGACTG', \\
-'AAACTTTCCGGATCTTCATAC', \\
-'CTACATCATCGAAGGCTACGC' \\
+\indent'GTAGATGTCATTAGCATGCAC', \\
+\indent'CCTAGCCACTCTGCCATGTCG', \\
+\indent'AACTCGTGCATTCTACGACTG', \\
+\indent'AAACTTTCCGGATCTTCATAC', \\
+\indent'CTACATCATCGAAGGCTACGC' \\
 ]
 
 \noindent \texttt{k} = 4
 \\\texttt{t} = len(dna)
-\\\texttt{best\_motifs} =
+\\\texttt{best\_motifs} = ['TCAT', 'CCAT', 'GCAT', 'TCAT', 'TCAT']
+
 
 
 \section{Randomized Motif Search}
 
 Funkcija ima tri parametra, \texttt{dna}, \texttt{k} i \texttt{t}. Povratna vrednost je skup najboljih motiva.
 
-Polazimo od slučajno odabranih motiva (dobijamo ih funkcijom \texttt{random\_k\_mers}). Pamtimo trenutno najbolje motive (na početku su to ovi slučajno odabrani) i njihov skor (koji računamo korišćenjem funkcije \texttt{score}, \ref{score}).
+Polazimo od slučajno odabranih motiva (dobijamo ih funkcijom \texttt{random\_k\_mers}, \ref{randomKmers}). Pamtimo trenutno najbolje motive (na početku su to ovi slučajno odabrani) i njihov skor (koji računamo korišćenjem funkcije \texttt{score}, \ref{score}).
 
 Vrtimo petlju dok se skor popravlja. Prvo, formiramo profil od tekućih motiva (funkcijom \texttt{profile\_from\_motifs}, \ref{profileFromMotifs}), a onda obrnuto, određujemo motive od dobijenog profila (funkcijom \texttt{motifs\_from\_profile}). Računamo skor novih motiva, i ako je skor manji od najboljeg, ažuriramo najbolje motive i njihov skor. Ukoliko je novi skor lošiji, tada prekidamo petlju i vraćamo najbolje motive.
 
@@ -112,10 +113,10 @@ Vrtimo petlju dok se skor popravlja. Prvo, formiramo profil od tekućih motiva (
 \subsection{Random Kmers}
 \label{randomKmers}
 
-Funkcija ima tri parametra, \texttt{dna}, \texttt{k} i \texttt{t}. Povratna vrednost je skup slučajno odabranih motiva. 
+Funkcija ima tri parametra, \texttt{dna}, \texttt{k} i \texttt{t}. Povratna vrednost je skup slučajno odabranih motiva. Neophodno je uključiti bibioteku \texttt{random}.
 
 Skup motiva na početku je prazan. Za svaku sekvencu iz \texttt{dna} generišemo jedan sluačajan broj koji predstavlja poziciju od koje počinje motiv, a biće dužine \texttt{k}. Odabranu podsekvencu dodajemo u skup motiva.
-
+\newpage
 \lstinputlisting[language=Python, frame=single]{nedelje/3/kodovi/3.2.RandomKmers.py}
 
 \subsection{Motifs From Profile}
@@ -129,22 +130,23 @@ Polazi se od praznog skupa motiva. Za svaku sekvencu iz \texttt{dna} određujemo
 
 \subsubsection{Test primer}
 \noindent\texttt{dna} = [ \\
-'GTAGATGTCATTAGCATGCAC', \\
-'CCTAGCCACTCTGCCATGTCG', \\
-'AACTCGTGCATTCTACGACTG', \\
-'AAACTTTCCGGATCTTCATAC', \\
-'CTACATCATCGAAGGCTACGC' \\
+\indent'GTAGATGTCATTAGCATGCAC', \\
+\indent'CCTAGCCACTCTGCCATGTCG', \\
+\indent'AACTCGTGCATTCTACGACTG', \\
+\indent'AAACTTTCCGGATCTTCATAC', \\
+\indent'CTACATCATCGAAGGCTACGC' \\
 ]
 
 \noindent \texttt{k} = 4
 \\\texttt{t} = len(dna)
-\\\texttt{best\_motifs} =
+\\\texttt{best\_motifs} = ['TGCA', 'TGCC', 'TGCA', 'CGGA', 'CGAA'] \footnote{Pošto funkcija koristi slučajno odabrane brojeve, izlaz nije jedinstven.}
+
 
 \section{Gibbs Sampler}
 
 Funkcija ima četiri parametra, \texttt{dna}, \texttt{k}, \texttt{t} i \texttt{N} - broj iteracija. Povratna vrednost je skup najboljih motiva.
 
-Polazimo od slučajno odabranih motiva (dobijamo ih funkcijom \texttt{random\_k\_mers}). Pamtimo trenutno najbolje motive (na početku su to ovi slučajno odabrani) i njihov skor (koji računamo korišćenjem funkcije \texttt{score}, \ref{score}).
+Polazimo od slučajno odabranih motiva (dobijamo ih funkcijom \texttt{random\_k\_mers}, \ref{randomKmers}). Pamtimo trenutno najbolje motive (na početku su to ovi slučajno odabrani) i njihov skor (koji računamo korišćenjem funkcije \texttt{score}, \ref{score}).
 
 Funkcija se izvršava u \texttt{N} iteracija, a u svakoj prvo biramo slučajan broj \texttt{i} iz skupa $[0, t)$ (to je slučajno odabrani motiv koji brišemo). Koristimo pomoćnu promenljivu \texttt{selected\_motifs} u koju kopiramo elemente iz \texttt{motifs}, a onda brišemo onaj na poziciji \texttt{i}, koja je slučano odabrana. Zatim, pravimo matricu profila (\texttt{profile\_from\_motifs}, \ref{profileFromMotifs}). Na osnovu dobijenog profila, određujemo najverovatniji motiv (funkcijom \texttt{most\_probable\_kmer}, \ref{mostProbableKmer}) i smeštamo u \texttt{motifs} na prehodno odabranu poziciju \texttt{i}, a brišemo ceo \texttt{selected\_motifs}.
 
@@ -157,14 +159,14 @@ Nakon toga, određuje se skor novog skupa motiva i, ukoliko je manji, ažuriramo
 
 \subsubsection{Test primer}
 \noindent\texttt{dna} = [ \\
-'GTAGATGTCATTAGCATGCAC', \\
-'CCTAGCCACTCTGCCATGTCG', \\
-'AACTCGTGCATTCTACGACTG', \\
-'AAACTTTCCGGATCTTCATAC', \\
-'CTACATCATCGAAGGCTACGC' \\
+\indent'GTAGATGTCATTAGCATGCAC', \\
+\indent'CCTAGCCACTCTGCCATGTCG', \\
+\indent'AACTCGTGCATTCTACGACTG', \\
+\indent'AAACTTTCCGGATCTTCATAC', \\
+\indent'CTACATCATCGAAGGCTACGC' \\
 ]
 
 \noindent \texttt{k} = 4
 \\\texttt{t} = len(dna)
 \\\texttt{N} = 500
-\\\texttt{best\_motifs} =
+\\\texttt{best\_motifs} = ['ATGC', 'CTGC', 'CTAC', 'CTTC', 'CTAC'] \footnote{Pošto funkcija koristi slučajno odabrane brojeve, izlaz nije jedinstven.}

@@ -1,8 +1,6 @@
 def faster_frequent_words(text, k):
     frequent_patterns = set([])
-    
     frequency_array = computing_frequencies(text, k)
-    
     max_count = max(frequency_array)
     
     for i in range(4**k):

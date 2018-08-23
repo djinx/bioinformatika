@@ -2,18 +2,16 @@ def LCSBacktrack(v, w):
 	n = len(v)
 	m = len(w)
 	s = [[0 for j in range(m + 1)] for i in range(n + 1)]
-
 	backtrack = [[(-1,-1) for j in range(m + 1)] for i in range(n + 1)]
 
 	for i in range(1, n + 1):
 		backtrack[i][0] = (i-1, 0)
-
+    
 	for j in range(1, m + 1):
 		backtrack[0][j] = (0, j-1)
 
 	for i in range(1, n + 1):
 		for j in range(1, m + 1):
-
 			s[i][j] = max(s[i-1][j], s[i][j-1], s[i-1][j-1] + int(v[i-1] == w[j-1]))
 
 			if s[i][j] == s[i-1][j]:
@@ -25,7 +23,6 @@ def LCSBacktrack(v, w):
 
 	i = backtrack[n][m][0]
 	j = backtrack[n][m][1]
-
 	lcs = ""
 
 	if i == n-1 and j == m - 1:
@@ -39,5 +36,4 @@ def LCSBacktrack(v, w):
 		j = backtrack[i][j][1]
 
 	print(lcs)
-
 	return s[n][m]

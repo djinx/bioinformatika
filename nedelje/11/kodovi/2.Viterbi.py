@@ -58,5 +58,4 @@ def viterbi(HMM, string):
 			max_end_state = state
 
 	path += max_end_state
-
 	return path

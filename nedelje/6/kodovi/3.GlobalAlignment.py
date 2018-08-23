@@ -1,7 +1,6 @@
 def global_alignment(v, w):
 	n = len(v)
 	m = len(w)
-
 	backtrack = [[(-1, -1) for j in range(m + 1)] for i in range(n + 1)]
 	s = [[0 for j in range(m + 1)] for i in range(n + 1)]
 
@@ -18,12 +17,10 @@ def global_alignment(v, w):
 			s[i][j] = max(
 							s[i-1][j] + GAP_PENALTY,
 							s[i][j-1] + GAP_PENALTY,
-							s[i-1][j-1] + match_score(v[i-1], w[j-1])
-						 )
+							s[i-1][j-1] + match_score(v[i-1], w[j-1]))
 
 			if s[i][j] == s[i-1][j] + GAP_PENALTY:
 				backtrack[i][j] = (i-1, j)
-
 			elif s[i][j] == s[i][j-1] + GAP_PENALTY:
 				backtrack[i][j] = (i, j-1)
 			else:
@@ -31,7 +28,6 @@ def global_alignment(v, w):
 
 	v_p = ""
 	w_p = ""
-
 	i = n
 	j = m
 
@@ -52,5 +48,4 @@ def global_alignment(v, w):
 
 	print(v_p)
 	print(w_p)
-
 	return s[n][m]

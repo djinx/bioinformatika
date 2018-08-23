@@ -1,4 +1,3 @@
-# Pronalazenje skupa motiva nakon N iteracija koriscenjem Gibs sampler-a
 def gibbs_sampler(dna, k, t, N):
     motifs = random_k_mers(dna, k, t)
     best_motifs = copy.deepcopy(motifs)

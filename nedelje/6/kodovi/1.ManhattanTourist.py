@@ -1,8 +1,6 @@
 def manhattan_tourist(n, m, down, right):
 	s = [[0 for j in range(m)] for i in range(n)]
-
 	backtrack = [[(0,0) for j in range(m)] for i in range(n)]
-
 	backtrack[0][0] = (-1, -1)
 
 	for i in range(1,n):

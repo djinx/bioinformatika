@@ -1,4 +1,3 @@
-# Pronalazenje maksimalnih nerazgranatih putanja u grafu
 def maximal_non_branching_paths(G):
     paths = []
     visited = {}

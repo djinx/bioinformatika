@@ -9,4 +9,3 @@ def cycle_to_chromosome(nodes):
 			chromosomes[j] = -nodes[2*j] // 2
 			
 	return chromosomes
-	

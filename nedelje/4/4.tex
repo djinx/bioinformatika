@@ -4,11 +4,11 @@ Funkcija ima jedan parametar, \texttt{G} - de Bruijn graf. Funkcija vraća maksi
 
 Putanja je inicijalno prazna lista, a dodatno održavamo mapu posećenih čvorova, koja je inicijalno prazna.
 
-Za svaki čvor \texttt{v} u grafu \texttt{G} računamo ulazni i izlazni stepen (funkcijom \texttt{degree}). Ukoliko je jedan od ta dva različit od 1, obeležavamo da je čvor posećen. Dodatno, ukoliko je izlazni stepen veći od 0, želimo da obiđemo sve susede. Za svaki čvor \texttt{w} iz liste suseda čvora \texttt{v}, pravimo putanju koja na početku sadrži samo granu (v, w). Zatim, obeležimo da je čvor \texttt{w} posećen i računamo njegov ulazni izlazni stepen. 
+Za svaki čvor \texttt{v} u grafu \texttt{G} računamo ulazni i izlazni stepen (funkcijom \texttt{degree}, \ref{degree}). Ukoliko je jedan od ta dva različit od 1, obeležavamo da je čvor posećen. Dodatno, ukoliko je izlazni stepen veći od 0, želimo da obiđemo sve susede. Za svaki čvor \texttt{w} iz liste suseda čvora \texttt{v}, pravimo putanju koja na početku sadrži samo granu (v, w). Zatim, obeležimo da je čvor \texttt{w} posećen i računamo njegov ulazni i izlazni stepen. 
 
 Pošto nam je potreban nerazgranati put, pratimo čvorove koji imaju tačno jednu ulaznu i jednu izlaznu granu. Tako, dokle god su i ulazni i izlazni stepeni čvora \texttt{w} jednaki 1, određujemo čvor \texttt{u}, čvor koji se nalazi na drugom kraju izlazne grane iz čvora \texttt{w}. Tu granu treba dodati u trenutni put. Zatim, čvor \texttt{w} dobija vrednost čvora \texttt{u} i potrebno je ponovo označiti čvor \texttt{w} kao posećen i ažurirate stepene. Kada nema više čvorova koji ispunjavaju uslov, u listu putanja dodajemo trenutni put.
 
-Još jednom prolazimo sve čvorove grafa \texttt{G}, i za svaki čvor \texttt{v} koji nije posećen, odredićemo izlovoani ciklus (funkcijom \texttt{isloated\_cycle}). Ukoliko takav ciklus postoji, dodajemo ga u listu putanja.
+Još jednom prolazimo sve čvorove grafa \texttt{G}, i za svaki čvor \texttt{v} koji nije posećen, odredićemo izolovani ciklus (funkcijom \texttt{isloated\_cycle}, \ref{isolatedCycle}). Ukoliko takav ciklus postoji, dodajemo ga u listu putanja.
 
 
 
@@ -51,7 +51,8 @@ Polazimo od prazne liste k-grama. Polazeći od pozicije 0, uzimamo podniske duž
 
 
 \subsection{De Bruijn}
-
+\label{deBruijn}
+	
 Funkcija ima jedan parametar, \texttt{kmers} - lista k-grama. Povratna vrednost je graf predstavljen mapom. 
 
 Prolazimo listu, element po element. Za svaki k-gram izdvajamo prefiks \texttt{u}, bez poslednjeg karaktera i sufiks \texttt{v}, bez prvog karaktera. Ukoliko se \texttt{u} nalazi u grafu \texttt{G}, a čvor \texttt{v} nije u njegovoj listi, dodajemo čvor \texttt{v} u listu čvora \texttt{u}. Ako se \texttt{u} ne nalazi u grafu, onda ga dodajemo u graf, a lista inicijlano sadrži samo \texttt{v}. Ako čvor \texttt{v} nije u grafu, dodajemo ga sa praznom listom.
@@ -82,14 +83,15 @@ Prolazimo sve čvorove grafa \texttt{G\_p} i računamo njihov ulazni i izlazni s
 
 Ukoliko smo našli takav čvor, odnosno, ukoliko njegova vrednost nije jednaka \texttt{None}, želimo da napravimo jednostavniji $(u, v, w)$ bajpas graf. Da se podsetimo, potrebno je da iz grafa uklonimo grane $(u, v)$ i $(v, w)$ i da dodamo novi čvor $x$ sa granama $(u, x)$ i $(x, v)$.
 
-Prolazimo sve čvorove \texttt{u} od kojih postoje grane ka čvoru \texttt{v\_p} u grafu \texttt{G\_p}, i sve čvorove \texttt{w} do kojih postoji grana od čvora \texttt{v\_p} u grafu \texttt{G\_p}. Zatim, pravimo bajpas graf (funkcijom \texttt{bypass}). Ukoliko je novi graf povezan (što možemo proveriti funkcijom \texttt{is\_connected}), dodajemo njegovu kopiju u \texttt{all\_graphs}.
+Prolazimo sve čvorove \texttt{u} od kojih postoje grane ka čvoru \texttt{v\_p} u grafu \texttt{G\_p} (funkcija \texttt{incoming}, \ref{incoming}), i sve čvorove \texttt{w} do kojih postoji grana od čvora \texttt{v\_p} u grafu \texttt{G\_p} (funkcija \texttt{outgoing}, \ref{outgoing}). Zatim, pravimo bajpas graf (funkcijom \texttt{bypass}, \ref{bypass}). Ukoliko je novi graf povezan (što možemo proveriti funkcijom \texttt{is\_connected}, \ref{isConnected}), dodajemo njegovu kopiju u \texttt{all\_graphs}.
 
-Ukoliko nismo našli odgovarajući čvor \texttt{v\_p}, onda prolazimo čvorove \texttt{k} grafa \texttt{G\_p} i određujemo isolovani ciklus iz svakog (funkcija \texttt{isloated\_cycle}, \ref{isolatedCycle}). Ukoliko takav ciklus postoji, želimo da napravimo nisku od ciklusa (funkcijom \texttt{create\_string\_from\_path}) i da je dodamo u listu ciklusa, ukoliko se već ne nalazi tamo.
+Ukoliko nismo našli odgovarajući čvor \texttt{v\_p}, onda prolazimo čvorove \texttt{k} grafa \texttt{G\_p} i određujemo izolovani ciklus iz svakog (funkcija \texttt{isloated\_cycle}, \ref{isolatedCycle}). Ukoliko takav ciklus postoji, želimo da napravimo nisku od ciklusa (funkcijom \texttt{create\_string\_from\_path}, \ref{createStringFromPath}) i da je dodamo u listu ciklusa, ukoliko se već ne nalazi tamo.
 
 
 \lstinputlisting[language=Python, frame=single]{nedelje/4/kodovi/2.AllEulerCycles.py}
 
 \subsection{Incoming}
+\label{incoming}
 
 Funkcija ima dva parametra, graf \texttt{G} i čvor \texttt{v}. Funkcija vraća listu čvorova grafa \texttt{G} od kojih postoji grana do čvora \texttt{v}.
 
@@ -98,6 +100,7 @@ Dovoljno je da jednom petljom prođemo sve čvorove grafa \texttt{G} i sve koji 
 \lstinputlisting[language=Python, frame=single]{nedelje/4/kodovi/2.4.Incoming.py}
 
 \subsection{Outgoing}
+\label{outgoing}
 
 Funkcija ima dva parametra, graf \texttt{G} i čvor \texttt{v}. Funkcija vraća listu čvorova do kojih postoje grane iz čvora \texttt{v} u grafu \texttt{G}, odnosno, vraća listu čvora \texttt{v}.
 
@@ -105,6 +108,7 @@ Funkcija ima dva parametra, graf \texttt{G} i čvor \texttt{v}. Funkcija vraća 
 
 
 \subsection{Bypass}
+\label{bypass}
 
 Funkcija ima četiri parametra, graf \texttt{G} i čvorove \texttt{u}, \texttt{v} i \texttt{w}. Povratna vrednost je novi graf sa izmenjenim granama. Još jednom, treba izbaciti grane $(u, v)$ i $(v, w)$, dodati novi čvor x (u kodu je \texttt{v'}, kako bi implementacija funkcije za pravljenje niske bila olakšana) povezati ga sa čvorom \texttt{u} i čvorom \texttt{w}.
 
@@ -115,6 +119,7 @@ Prvo, kopiramo graf \texttt{G} u \texttt{G\_p}, koji ćemo dalje menjati. Zatim,
 
 
 \subsection{Is Connected}
+\label{isConnected}
 
 Funkcija ima jedan parametar, graf \texttt{G}. Povratna vrednost je tipa boolean.
 
@@ -122,10 +127,12 @@ Održavamo mapu posećenosti. Za svaki čvor \texttt{v} u grafu \texttt{G} poziv
 
 Za svaki čvor \texttt{v}u grafu \texttt{G} proveravamo da li se nalazi u mapi posećenih čvorova. Ukoliko bar jedan čvor nije u mapi, graf nije povezan i vraćamo \texttt{False}. Inače, vraćamo \texttt{True}.
 
+\newpage
 \lstinputlisting[language=Python, frame=single]{nedelje/4/kodovi/2.1.IsConnected.py}
 
 
 \subsection{Create String From Path}
+\label{createStringFromPath}
 
 Funkcija ima jedan parametar, \texttt{path} - putanja na osnovu koje pravimo nisku.
 
@@ -135,7 +142,8 @@ Niska na početku sadrži karaktere ulaznog čvora prve grane. Ostale karaktere 
 \lstinputlisting[language=Python, frame=single]{nedelje/4/kodovi/2.6.CreateStringFromPath.py}
 
 
-\subsubsection{DFS}
+\subsection{DFS}
+\label{DFS}
 
 Funkcija ima tri parametra, graf \texttt{G}, čvor \texttt{v} i mapu posećenosti \texttt{visited}. Nema povratne vrednosti.
 
@@ -147,14 +155,15 @@ Funkcija ima tri parametra, graf \texttt{G}, čvor \texttt{v} i mapu posećenost
 
 \subsubsection{Test primer}
 
-\noindent\texttt{G} = \{ \\\indent'AT' : ['TC'],  \\\indent 'TC' : ['CG'], \\\indent'CG': ['GA','GG'],  \\\indent'GA':['AT','AC'],  \\\indent'AC':['CG'], \\\indent'GG':['GA']\\\}
-\\\texttt{cycles} =
+\noindent\texttt{G} = \{'AT' : ['TC'], 'TC' : ['CG'], 'CG': ['GA','GG'], 'GA':['AT','AC'],  'AC':['CG'], 'GG':['GA']\}
+\\\texttt{cycles} = ['ATCGACGGAT', 'TCGACGGATC', 'CGGATCGACG', 'GACGGATCGA', 'ACGGATCGAC', 'GGATCGACGG', 'CGACGGATCG', 'GATCGACGGA', 'ATCGGACGAT', 'TCGGACGATC', 'CGATCGGACG', 'GACGATCGGA', 'ACGATCGGAC', 'GGACGATCGG', 'CGGACGATCG', 'GATCGGACGA']
 
 \section{String Spelled By Gapped Patterns}
+\label{stringSpelledByGappedPatterns}
 
 Funkcija ima tri parametra, \texttt{gapped\_patterns} - skup parova k-grama, \texttt{k} i \texttt{d} - rastojanje dva susedna para k-grama. Povratna vrednost je niska sačinjena od zadatih k-grama.
 
-Razdvajamo parove u posebne liste, \texttt{first\_patterns} i \texttt{second\_patterns}. Zatim, formiramo prefiksne (od \texttt{first\_patterns}) i sufiksne (od \texttt{second\_patterns}) niske (funkcijom \texttt{string\_spe-\\lled\_by\_patterns}).
+Razdvajamo parove u posebne liste, \texttt{first\_patterns} i \texttt{second\_patterns}. Zatim, formiramo prefiksne (od \texttt{first\_patterns}) i sufiksne (od \texttt{second\_patterns}) niske (funkcijom \texttt{string\_spe-\\lled\_by\_patterns}, \ref{stringSpelledByPatterns}).
 
 
 Prefiksna i sufiksna niska imaju prefiks, odnoso, sufiks dužine \texttt{k+d}, a ostatak niski treba da im se poklopi. Tako da, prolazimo ove niske karakter po karakter. Prefiksu prolazimo počevši od pozicije \texttt{k+d} do kraja, a sufiksnu prolazimo od 0 do \texttt{len(prefiks\_string)-k-d}. Ukoliko naiđemo na nepoklapanje nukleotida na nekoj poziciji, ispisujemo odgovarajuću poruku i vraćamo praznu nisku. Ako su svi nukleotidi u redu, vraćamo nisku koja se dobije nadovezivanjem sufiksa iz sufiksne niske na prefiksnu nisku.
@@ -164,6 +173,7 @@ Prefiksna i sufiksna niska imaju prefiks, odnoso, sufiks dužine \texttt{k+d}, a
 \lstinputlisting[language=Python, frame=single]{nedelje/4/kodovi/3.StringSpelledByGappedPatterns.py}
 
 \subsection{String Spelled By Patterns}
+\label{stringSpelledByPatterns}
 
 Funkcija ima dva parametra, \texttt{patterns} - niske koje treba spojiti, i \texttt{k} - dužina svake niske. Povratna vrednost je DNK niska sastavljena od datih k-grama.
 
@@ -177,4 +187,4 @@ Početna vrednost niske \texttt{dna\_string} je k-gram bez poslednjeg karaktera.
 \noindent\texttt{gapped\_patterns} = [('CTG','CTG'),('TGA','TGA'),('GAC','GAC'),('ACT','ACT')]
 \\\texttt{k} = 3
 \\\texttt{d} = 1
-\\\texttt{string} =
+\\\texttt{string} = CTGACTGACT

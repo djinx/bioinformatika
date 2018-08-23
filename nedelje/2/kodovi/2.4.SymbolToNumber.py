@@ -1,4 +1,3 @@
-# Prevodjenje nukleotida u brojeve
 def symbol_to_number(c):
     pairs = {
         'a' : 0,

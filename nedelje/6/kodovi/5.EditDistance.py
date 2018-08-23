@@ -19,7 +19,6 @@ def edit_distance(v, w):
 
 			if s[i][j] == s[i-1][j] + 1:
 				backtrack[i][j] = (i-1, j)
-
 			elif s[i][j] == s[i][j-1] + 1:
 				backtrack[i][j] = (i, j-1)
 			else:
@@ -27,7 +26,6 @@ def edit_distance(v, w):
 
 	v_p = ""
 	w_p = ""
-
 	i = n
 	j = m
 

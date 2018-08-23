@@ -1,5 +1,4 @@
 def HMM(strings_pos, strings_neg):
-	
 	HMM = {}
 
 	for string in strings_pos:
@@ -38,11 +37,8 @@ def HMM(strings_pos, strings_neg):
 		output_sum = 0
 		for dest in HMM[source]['transitions']:
 			output_sum += HMM[source]['transitions'][dest]
-
 		for dest in HMM[source]['transitions']:
 			HMM[source]['transitions'][dest] = (HMM[source]['transitions'][dest] / output_sum) * 0.98
 
 		HMM[source]['0'] = 0.02
-
-
 	return HMM

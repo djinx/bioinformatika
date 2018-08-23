@@ -1,4 +1,3 @@
-# Prevodjenje brojeva u nukleotide        
 def number_to_symbol(n):
     pairs = {
         0 : 'a',

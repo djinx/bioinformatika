@@ -13,8 +13,6 @@ Ostale elemente obradićemo redom, kroz dvostruku petlju. Za svaki element raču
 Kada su određene vrednosti za sve elemente, želimo da ispišemo čitavu putanju (unazad, od \texttt{(n-1, m-1)} do \texttt{(0, 0)}), nakon čega vraćamo vrednost elementa \texttt{n-1, m-1} matrice cena. Polazimo od poslednjeg elementa, \texttt{(n-1, m-1)}, i vrtimo petlju dok u matrici \texttt{backtrack} ne naiđemo na element čija je vrednost jednaka (-1, -1) - podsetimo se da je to pogodno izabran prethodnik za početni čvor.
 
 
-\lstinputlisting[language=Python, frame=single]{nedelje/6/kodovi/1.ManhattanTourist.py}
-
 \subsection{Test primer}
 
 \noindent \texttt{n} = 3
@@ -32,7 +30,14 @@ Kada su određene vrednosti za sve elemente, želimo da ispišemo čitavu putanj
 \\\indent[0, 1, 0, 1],
 \\\indent[0, 1, 0, 1]
 \\]
-\\\texttt{manhattan} = 
+\\
+\\\texttt{ispis} = (1, 2) (1, 1) (1, 0) (0, 0)
+\\\texttt{manhattan} = 9
+
+\newpage
+
+\lstinputlisting[language=Python, frame=single]{nedelje/6/kodovi/1.ManhattanTourist.py}
+
 
 \section{LCS Backtrack}
 
@@ -46,9 +51,9 @@ Dvostrukom petljom obrađujemo ostale elemente. Za svakog računamo cenu kao mak
 
 Potrebno je još odrediti prethodnika trenutnog elementa. To se može odrediti poređenjem cena trenutnog elementa sa cenama okolnih. Ukoliko je cena trenutnog jednaka ceni elementa iznad, onda je element iznad prethodnik. Ukoliko je cena trenutnog elementa jednaka ceni elementa levo od njega, onda je element levo njegov prethodnik. U suprotnom, element na dijagonali je prethodnik.
 
-Preostalo je još da sastavimo nisko koja predstavlja zajedničku podsekvencu. Određujemo indekse, \texttt{i} i \texttt{j}, od kojih ćemo početi. To su indeksi prethodnika poslednjeg elementa. Niska \texttt{lcs} inicijalno je prazna. Ovu vrednost menjamo u slučaju da je prethodnik poslednjeg elementa na dijagonali, odnosno, u slučaju da je \texttt{i=n-1} i \texttt{j=m-1}. Tada, \texttt{lcs} dobija vrednost poslednjeg karaktera niske \texttt{v} (ili niske \texttt{w}, pošto su te vrednosti svakako jednake).
+Preostalo je još da sastavimo nisku koja predstavlja zajedničku podsekvencu. Određujemo indekse, \texttt{i} i \texttt{j}, od kojih ćemo početi. To su indeksi prethodnika poslednjeg elementa. Niska \texttt{lcs} inicijalno je prazna. Ovu vrednost menjamo u slučaju da je prethodnik poslednjeg elementa na dijagonali, odnosno, u slučaju da je \texttt{i=n-1} i \texttt{j=m-1}. Tada, \texttt{lcs} dobija vrednost poslednjeg karaktera niske \texttt{v} (ili niske \texttt{w}, pošto su te vrednosti svakako jednake).
 
-Petljuu vrtimo dok su \texttt{i} i \texttt{j} različiti od 0. U svakoj iteraciji proveravamo da li je prethodnih na dijagonali i, ako jeste, karakter prethodnika nadovezujemo na početak. Ažuriramo \texttt{i} i \texttt{j} tako da sadrže indekse prethodnika.
+Petljuu vrtimo dok su \texttt{i} i \texttt{j} različiti od 0. U svakoj iteraciji proveravamo da li je prethodnih na dijagonali i, ako jeste, karakter prethodnika nadovezujemo na početak. Ažuriramo \texttt{i} i \texttt{j} tako da sadrže indekse prethodnika. 
 
 Kada je određena niska \texttt{lcs}, štampamo je i vraćamo cenu poslednjeg elementa.
 
@@ -59,8 +64,8 @@ Kada je određena niska \texttt{lcs}, štampamo je i vraćamo cenu poslednjeg el
 
 \noindent\texttt{v} = ‚‚abcd''
 \\\texttt{w} = ‚‚dabe''
-\\\texttt{lcs} = 
-\\\texttt{match} = 
+\\\texttt{lcs} = ab
+\\\texttt{match} = 2 
 
 \section{Global Alignment}
 
@@ -78,11 +83,10 @@ Potrebno je još odrediti prethodnika trenutnog elementa. To se može odrediti p
 
 Sledeći korak je da odredimo kako izgledaju niske \texttt{v} i \texttt{w} sa svim insercijama i delecijama. Izmenjene niske čuvamo u promenljivama \texttt{v\_p} i \texttt{w\_p}, a njihovi indeksi su, redom, \texttt{i=n} i \texttt{j=m}. Niske su, naravno, inicijalno prazne.
 
-Petlju vrtimo dok ne dođemo do početnog elementa, (0, 0). U zavisnosti od prethodnika zaključićemo da li se desila insercija, delecija ili (ne)poklapanje. Ukoliko je prethodnik dijagonalni element, u pitanju je (ne)poklapanje i obe niske proširujemo nadovezivanjem prethodnih karaktera na početak. Ukoliko je prethodnik element iznad, u pitanju je delecija. Niska \texttt{v\_p} proširuje se nadovezivanjem prethodnog karaktera niske \texttt{v} na početak, a niski \texttt{w\_p} se nadovezuje '-' na početak. U preostalom slučaju imamo inserciju kada se niski \texttt{v\_p} nadovezuje '-' na početak, a niski \texttt{w\_p} se nadovezuje prethodni karakter niske \texttt{w} na početak.
+Petlju vrtimo dok ne dođemo do početnog elementa, (0, 0). U zavisnosti od prethodnika zaključićemo da li se desila insercija (dodavanje karaktera u prvu nisku), delecija (brisanje karaktera iz druge niske) ili (ne)poklapanje. Ukoliko je prethodnik dijagonalni element, u pitanju je (ne)poklapanje i obe niske proširujemo nadovezivanjem prethodnih karaktera na početak. Ukoliko je prethodnik element iznad, u pitanju je delecija. Niska \texttt{v\_p} proširuje se nadovezivanjem prethodnog karaktera niske \texttt{v} na početak, a niski \texttt{w\_p} se nadovezuje '-' na početak. U preostalom slučaju imamo inserciju kada se niski \texttt{v\_p} nadovezuje '-' na početak, a niski \texttt{w\_p} se nadovezuje prethodni karakter niske \texttt{w} na početak.
 
 Nakon što smo formirali niske i odštampali ih na standardni izlaz, vraćamo ukupan skor ovog poravnanja, odnosno, vrednost poslednjeg elementa matrice \texttt{s}.
 
-\lstinputlisting[language=Python, frame=single]{nedelje/6/kodovi/3.GlobalAlignment.py}
 
 \subsection{Match Score}
 \label{matchScore}
@@ -92,10 +96,17 @@ Funkcija ima dva parametra, karaktere \texttt{c1} i \texttt{c2}. Funkcija vraća
 
 \lstinputlisting[language=Python, frame=single]{nedelje/6/kodovi/3.1.MatchScore.py}
 
+
+\lstinputlisting[language=Python, frame=single]{nedelje/6/kodovi/3.GlobalAlignment.py}
+
 \subsubsection{Test primer}
 
 \noindent\texttt{v} = ‚‚AAATTTGGGCCCGGGAAATTTCCC''
 \\\texttt{w} = ‚‚GGGCCCTT''
+\\\texttt{vp} = ‚‚AAATTTGGGCCCGGGAAATTTCCC''
+\\\texttt{wp} = ‚‚ - - - - - - GGGCCC -- - -  - - - TT - - - -''
+\\\texttt{alignment\_score} = -24
+
 
 \section{Local Alignment}
 
@@ -111,6 +122,7 @@ Preostaje nam da odredimo maksimalnu vrednost matrice, jednostavnim proslaskom p
 
 \noindent\texttt{string\_1} = 'ACGTGCTCG'
 \\\texttt{string\_2} = 'AATGCTCT'
+\\\texttt{local\_alignment} = 5
 
 \section{Edit Distance}
 
@@ -126,7 +138,6 @@ Dvostrukom petljom određujemo vrednosti ostalih elemenata. Vrednost trenutnog e
 
 Potrebno je još odrediti prethodnika trenutnog elementa. To se može odrediti poređenjem rastojanja trenutnog elementa sa rastojanjima okolnih. Ukoliko je rastojanje trenutnog jednako zbiru rastojanja elementa iznad uvećanog za 1, onda je element iznad prethodnik. Ukoliko je rastojanje trenutnog elementa jednako zbiru rastojanja elementa levo od njega uvećanog za 1, onda je element levo njegov prethodnik. U suprotnom, element na dijagonali je prethodnik.
 
-
 Sledeći korak je da odredimo kako izgledaju niske \texttt{v} i \texttt{w} sa svim insercijama i delecijama. Izmenjene niske čuvamo u promenljivama \texttt{v\_p} i \texttt{w\_p}, a njihovi indeksi su, redom, \texttt{i=n} i \texttt{j=m}. Niske su, naravno, inicijalno prazne.
 
 Petlju vrtimo dok ne dođemo do početnog elementa, (0, 0). U zavisnosti od prethodnika zaključićemo da li se desila insercija, delecija ili (ne)poklapanje. Ukoliko je prethodnik dijagonalni element, u pitanju je (ne)poklapanje i obe niske proširujemo nadovezivanjem prethodnih karaktera na početak. Ukoliko je prethodnik element iznad, u pitanju je delecija. Niska \texttt{v\_p} proširuje se nadovezivanjem prethodnog karaktera niske \texttt{v} na početak, a niski \texttt{w\_p} se nadovezuje '-' na početak. U preostalom slučaju imamo inserciju kada se niski \texttt{v\_p} nadovezuje '-' na početak, a niski \texttt{w\_p} se nadovezuje prethodni karakter niske \texttt{w} na početak.
@@ -134,9 +145,14 @@ Petlju vrtimo dok ne dođemo do početnog elementa, (0, 0). U zavisnosti od pret
 Nakon što smo formirali niske i odštampali ih na standardni izlaz, vraćamo ukupan skor ovog poravnanja, odnosno, vrednost poslednjeg elementa matrice \texttt{s}.
 
 
-\lstinputlisting[language=Python, frame=single]{nedelje/6/kodovi/5.EditDistance.py}
-
 \subsection{Test primer}
 
 \noindent\texttt{v} = ‚‚AAATTTGGGCCCGGGAAATTTCCC''
-\\\texttt{w} = ‚‚AAACCCTTTGGGCCCTTTAAACCC'
+\\\texttt{w} = ‚‚AAACCCTTTGGGCCCTTTAAACCC''
+\\\texttt{vp} = ‚‚AAA - - -TTTGGGCCCGGGAAATTTCCC''
+\\\texttt{wp} = ‚‚AAACCCTTTGGGCCCTTTAAA - - - CCC''
+\\\texttt{edit\_distance} = 9
+
+
+\newpage
+\lstinputlisting[language=Python, frame=single]{nedelje/6/kodovi/5.EditDistance.py}

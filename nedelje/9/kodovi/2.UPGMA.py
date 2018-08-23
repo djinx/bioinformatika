@@ -1,6 +1,5 @@
 def UPGMA(D, n):
 	clusters = [Cluster([i], 0) for i in range(n)]
-
 	num_clusters = len(D)
 
 	while num_clusters > 1:

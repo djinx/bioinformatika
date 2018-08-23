@@ -1,5 +1,4 @@
 def limb(D, j):
-	
 	minimum = float('inf')
 
 	for i in range(j):

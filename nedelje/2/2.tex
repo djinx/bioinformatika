@@ -1,14 +1,14 @@
 \section{Frequent Words}
 
 Funkcija ima dva parametra, \texttt{text} i \texttt{k}. Parametar \texttt{text} predstavlja nisku u kojoj tražimo podnisku dužine \texttt{k}. Povratna vrednost funkcije je skup podniski dužine \texttt{k} koje se najčešće pojavljuju.
-\\
-\\
-Polazimo od praznog skupa \texttt{frequent\_patterns} i praznog niza \texttt{count}. Polazeći od nulte pozicije određujemo broj pojavljivanja (funkcijom \texttt{pattern\_count}) svake podniske dužine \texttt{k} i broj dodajemo u niz \texttt{count}. Zatim, određujemo najveći broj iz niza (ugrađenom funkcijom \texttt{max}). Na kraju, u skup \texttt{frequent\_patterns} dodajemo sve podniske čiji je broj pojavljivanja jednak najvećem.
+
+Polazimo od praznog skupa \texttt{frequent\_patterns} i praznog niza \texttt{count}. Polazeći od nulte pozicije određujemo broj pojavljivanja (funkcijom \texttt{pattern\_count}, \ref{patternCount}) svake podniske dužine \texttt{k} i broj dodajemo u niz \texttt{count}. Zatim, određujemo najveći broj iz niza (ugrađenom funkcijom \texttt{max}). Na kraju, u skup \texttt{frequent\_patterns} dodajemo sve podniske čiji je broj pojavljivanja jednak najvećem.
 
 \lstinputlisting[language=Python, frame=single]{nedelje/2/kodovi/1.1.FrequentWords.py}
 
 
 \subsection{Pattern Count}
+\label{patternCount}
 
 Funkcija ima dva parametra, \texttt{text} i \texttt{pattern}. Prebrojava pojavljivanja zadate sekvence \texttt{pattern} u tekstu \texttt{text}. 
 
@@ -17,22 +17,23 @@ Funkcija ima dva parametra, \texttt{text} i \texttt{pattern}. Prebrojava pojavlj
 \subsubsection{Test primer}
 \noindent\texttt{text} = 'atgcgctagtcactagtgtcagttcgatgtcgat'
 \\\texttt{k} = 3
-\\\texttt{frequent\_patterns} = ....
+\\\texttt{frequent\_patterns} = \{'agt', 'gtc'\}
 
 
 \section{Faster Frequent Words}
 
 Funkcija ima dva parametra, \texttt{text} i \texttt{k}. Parametar \texttt{text} predstavlja nisku u kojoj tražimo podnisku dužine \texttt{k}. Povratna vrednost funkcije je par - skup podniski dužine \texttt{k} koje se najčešće pojavljuju i broj pojavljivanja sekvenci iz skupa u tekstu. 
 
-Polazi se od praznog skupa sekvenci. Prvo, određujemo niz frekvencija pojavljivanja svih podniski dužine \texttt{k} korišćenjem funkcije \texttt{computing\_frequencies}. Indeks niza jedinstveno određuje nisku, i obrnuto (u tu svrhu koriste se funkcije \texttt{nuber\_to\_pattern} i \texttt{pattern\_to\_number}). Zatim, određujemo najveću frekvenciju. Na kraju, prolazimo sve kombinacije niski nad azbukom $\{A, T, C, G\}$ i u skup dodajemo sekvence sa maksimalnom frekvencijom.
+Polazi se od praznog skupa sekvenci. Prvo, određujemo niz frekvencija pojavljivanja svih podniski dužine \texttt{k} korišćenjem funkcije \texttt{computing\_frequencies} (\ref{computingFrequencies}). Indeks niza jedinstveno određuje nisku, i obrnuto (u tu svrhu koriste se funkcije \texttt{number\_to\_pattern} - \ref{numberToPattern}; i \texttt{pattern\_to\_number} - \ref{patternToNumber}). Zatim, određujemo najveću frekvenciju. Na kraju, prolazimo sve kombinacije niski nad azbukom $\{A, T, C, G\}$ i u skup dodajemo sekvence sa maksimalnom frekvencijom.
 
 \lstinputlisting[language=Python, frame=single]{nedelje/2/kodovi/2.FasterFrequentWords.py} 
 
 
 \subsection{Computing Frequencies}
+\label{computingFrequencies}
 
 Funkcija ima dva parametra, \texttt{text} i \texttt{k}. Funkcija formira niz frekvencija pojavljivanja za sve moguće kombinacije niski nad azbukom $\{A, T, C, G\}$.
-Polazimo od niza nula dimenzije $4^k$. Za svaku podnisku dužine \texttt{k} određujemo njen broj (funkcijom \texttt{pattern\_to\_number}) odnosno, indeks u nizu frekvencija, i odgovarajući element uvećamo za jedan.
+Polazimo od niza nula dimenzije $4^k$. Za svaku podnisku dužine \texttt{k} određujemo njen broj (funkcijom \texttt{pattern\_to\_number}, \ref{patternToNumber}) odnosno, indeks u nizu frekvencija, i odgovarajući element uvećamo za jedan.
 
 \lstinputlisting[language=Python, frame=single]{nedelje/2/kodovi/2.1.ComputingFrequencies.py} 
 
@@ -40,41 +41,52 @@ Polazimo od niza nula dimenzije $4^k$. Za svaku podnisku dužine \texttt{k} odre
 \subsection{Number To Pattern}
 \label{numberToPattern}
 
-Funkcija ima dva parametra, \texttt{n} - broj koji treba pretvoriti u sekvencu, i \texttt{k} - dužinu sekvence. Implementacija je rekurzivna. Izlazimo iz rekurzije kada je dužina sekvence jednaka 1, pri čemu vraćamo karakter koji odgovara trenutnoj vrednosti broja \texttt{n}. Računa se u osnovi 4. Prefiksni indeks predstavlja količnik broja \texttt{n} i broja 4. Određujemo karakter \texttt{c}, koji odgovara ostatku koji se dobija pri tom deljenju. Takođe, treba odrediti prefiksnu sekvencu koja odgovara prefiksnom indeksu, rekurzivnim pozivom, pri čemu je \texttt{k} umanjeno za 1. Vraćamo nisku koja se dobija nadovezivanjem karaktera \texttt{c} na prefiksnu sekvencu.
+Funkcija ima dva parametra, \texttt{n} - broj koji treba pretvoriti u sekvencu, i \texttt{k} - dužinu sekvence. Povratna vrednost je niska koja odgovara broju \texttt{n}.
+
+Implementacija je rekurzivna. Izlazimo iz rekurzije kada je dužina sekvence jednaka 1, pri čemu vraćamo karakter koji odgovara trenutnoj vrednosti broja \texttt{n}. Računa se u osnovi 4. Prefiksni indeks predstavlja količnik broja \texttt{n} i broja 4. Određujemo karakter \texttt{c}, koji odgovara ostatku koji se dobija pri tom deljenju (funkcijom number\_to\_symbol, \ref{numberToSymbol}). Takođe, treba odrediti prefiksnu sekvencu koja odgovara prefiksnom indeksu, rekurzivnim pozivom, pri čemu je \texttt{k} umanjeno za 1. Vraćamo nisku koja se dobija nadovezivanjem karaktera \texttt{c} na prefiksnu sekvencu.
 
 
 \lstinputlisting[language=Python, frame=single]{nedelje/2/kodovi/2.3.NumberToPattern.py} 
 
-\subsubsection{Pattern To Number}
+\subsection{Pattern To Number}
 \label{patternToNumber}
 
-Funkcija ima jedan parametar, \texttt{pattern}, koji treba pretvoriti u broj. Implementacija je rekurzivna. Izlaz iz rekurzije je sekvenca dužine 0, kojoj odgovara broj 0. Broj se računa u osnovi 4, korišćenjem Hornerove sheme. Rekurzivno računamo broj prefiksa (podniska bez poslednjeg karaktera), množimo sa 4 i dodajemo broj koji odgovara poslednjem karakteru (korišćenjem funkcije \texttt{symbol\_to\_number}).
+Funkcija ima jedan parametar, \texttt{pattern}, koji treba pretvoriti u broj. Povratna vrednost je broj koji odgovara niski \texttt{pattern}.
+
+Implementacija je rekurzivna. Izlaz iz rekurzije je sekvenca dužine 0, kojoj odgovara broj 0. Broj se računa u osnovi 4, korišćenjem Hornerove sheme. Rekurzivno računamo broj prefiksa (podniska bez poslednjeg karaktera), množimo sa 4 i dodajemo broj koji odgovara poslednjem karakteru (korišćenjem funkcije \texttt{symbol\_to\_number}, \ref{symbolToNumber}).
 
 
 \lstinputlisting[language=Python, frame=single]{nedelje/2/kodovi/2.2.PatternToNumber.py}
 
 
-\subsubsection{Symbol To Number}
+\subsection{Symbol To Number}
 \label{symbolToNumber}
 
 Funckija prima jedan karakter i vraća odgovarajući broj. Broj se čita iz mape koja preslikava karaktere A, T, C, G u brojeve 0, 1, 2, 3.
 
 \lstinputlisting[language=Python, frame=single]{nedelje/2/kodovi/2.4.SymbolToNumber.py}
 
-\subsubsection{Number To Symbol}
+\subsection{Number To Symbol}
 \label{numberToSymbol}
+
 Funkcija prima jednu cifru i vraća odgovarajući karakter. Karakter se čita iz mape koja preslikava cifre 0, 1, 2, 3 u karatere A, T, C, G.
 
 \lstinputlisting[language=Python, frame=single]{nedelje/2/kodovi/2.5.NumberToSymbol.py}
+
+
+\subsubsection{Test primer}
+\noindent\texttt{text} = 'atgcgctagtcactagtgtcagttcgatgtcgat'
+\\\texttt{k} = 3
+\\\texttt{frequent\_patterns} = \{'agt', 'gtc'\}
 
 \section{Frequent Words With Mismatches}
 
 Funkcija ima tri parametra, \texttt{text}, \texttt{k} i \texttt{d} - broj dozvoljenih promašaja. Povratna vrednost je skup čestih sekvenci sa najviše \texttt{d} promašaja.
 
 Polazimo od praznog skupa čestih sekvenci. Pravimo dva niza nula dimenzije $4^k$, \texttt{close} - kanadidati za proveru i \texttt{frequency\_array} - frekvencije kandidata. 
-Za svaki uzorak dužine \texttt{k} određujemo susede - sekvence koje se od uzorka razlikuju na najviše \texttt{d} pozicija (korišćenjem funkcije \texttt{neighbors}). Za svakog suseda određujemo indeks i evidentiramo ga u nizu kandidata (niz \texttt{close}) - postavljamo mu vrednost na 1.
+Za svaki uzorak dužine \texttt{k} određujemo susede - sekvence koje se od uzorka razlikuju na najviše \texttt{d} pozicija (korišćenjem funkcije \texttt{neighbors}, \ref{neighbors}). Za svakog suseda određujemo indeks i evidentiramo ga u nizu kandidata (niz \texttt{close}) - postavljamo mu vrednost na 1.
 
-Prolazimo elemente niza \texttt{close} i za sve koji su evidentirani određujemo koja je sekvenca u pitanju, na osnovu indeksa (funkcijom \texttt{number\_to\_pattern}) i za njih se određuje broj pojavljivanja koji se pamti u nizu frekvencija (funkcijom \texttt{approximate\_pattern\_count}). 
+Prolazimo elemente niza \texttt{close} i za sve koji su evidentirani određujemo koja je sekvenca u pitanju, na osnovu indeksa (funkcijom \texttt{number\_to\_pattern}, \ref{numberToPattern}) i za njih se određuje broj pojavljivanja koji se pamti u nizu frekvencija (funkcijom \texttt{approximate\_pattern\_count}, \ref{approximatePatternCount}). 
 
 Zatim, određujemo najveću frekvenciju. Na kraju, u skup čestih sekvenci dodaje se svaka sekvenca čiji je frekvencija jednaka najvećoj.
 
@@ -82,12 +94,13 @@ Zatim, određujemo najveću frekvenciju. Na kraju, u skup čestih sekvenci dodaj
 
 
 \subsection{Neighbors}
+\label{neighbors}
 
 Funkcija ima dva parametra, \texttt{pattern} i \texttt{d}. Povratna vrednost je skup \texttt{neighborhood}. Implementacija je rekurzivna. Prvo se proverava da li je \texttt{d} jednako 0. U tom slučaju vraćamo jednočlani skup koji sadrži samo \texttt{pattern}. To omogućava da funkciju koristimo i u slučaju kad ne želimo promašaje bez ikakvih modifikacija.
 
-Izlazimo iz rekurzije kada je dužina uzorka jednaka 1. U tom slučaju vraćamo skup koji sadrži listu svih slova azbuke. 
+Izlazimo iz rekurzije kada je dužina uzorka jednaka 1. U tom slučaju vraćamo skup koji sadrži listu svih slova azbuke $\{A, C, G, T\}$. 
 
-Pravimo skup \texttt{neighborhood} koji inicijalno sadrži praznu listu. Zatim, određujemo susede sufiksa, odnosno, sekvence bez prvog karaktera niske \texttt{pattern} i smeštamo u \texttt{suffix\_neighbors}. Za svakog suseda sufiksa, koji se od sufiksa razlikuje na manje od \texttt{d} mesta, u \texttt{neighborhood} dodajemo 4 sekvence, po jedna za svako slovo azbuke, pri čemu se slovo nadovezuje na početak suseda. Za susede koji se razlikuju na više od \texttt{d} pozicija, u \texttt{neighborhood} dodajemo suseda na čiji je početak nadovezan prvi karakter niske \texttt{pattern}, kako se razlika ne bi povećala i premašila dozvoljeni broj \texttt{d}. Kao mera za razliku koristi se Hamingovo rastojanje (funckija \texttt{hamming\_distance}).
+Pravimo skup \texttt{neighborhood} koji inicijalno sadrži praznu listu. Zatim, određujemo susede sufiksa, odnosno, sekvence bez prvog karaktera niske \texttt{pattern} i smeštamo u \texttt{suffix\_neighbors}. Za svakog suseda sufiksa, koji se od sufiksa razlikuje na manje od \texttt{d} mesta, u \texttt{neighborhood} dodajemo 4 sekvence, po jedna za svako slovo azbuke, pri čemu se slovo nadovezuje na početak suseda. Za susede koji se razlikuju na više od \texttt{d} pozicija, u \texttt{neighborhood} dodajemo suseda na čiji je početak nadovezan prvi karakter niske \texttt{pattern}, kako se razlika ne bi povećala i premašila dozvoljeni broj \texttt{d}. Kao mera za razliku koristi se Hamingovo rastojanje (funckija \texttt{hamming\_distance}, \ref{hammingDistance}).
 
 
 
@@ -95,26 +108,27 @@ Pravimo skup \texttt{neighborhood} koji inicijalno sadrži praznu listu. Zatim, 
 
 
 \subsection{Approximate Pattern Count}
+\label{approximatePatternCount}
 
-Funckija ima tri parametra, \texttt{tekst}, \texttt{pattern} i \texttt{d}. Povratna vrednost je broj pojavljivanja podsekvenci u tekstu koje se od uzorka razlikuju na najvise \texttt{d} pozicija. Kao i u prethodnoj funkciji, koristi se Hamingovo rastojanje.
+Funckija ima tri parametra, \texttt{text}, \texttt{pattern} i \texttt{d}. Povratna vrednost je broj pojavljivanja podsekvenci u tekstu koje se od uzorka razlikuju na najvise \texttt{d} pozicija. Kao i u prethodnoj funkciji, koristi se Hamingovo rastojanje (\ref{hammingDistance}).
 
 \lstinputlisting[language=Python, frame=single]{nedelje/2/kodovi/3.2.ApproximatePatternCount.py}
 
 
-\subsubsection{Hamming distance}
+\subsection{Hamming distance}
 \label{hammingDistance}
 
-Funkcija ima dva parametra, \texttt{text1} i \texttt{text2}. Povratna vrednost je brj pozicija na kojima se tekstovi razlikuju. Podrazumeva se da je dužina niski jednaka. 
+Funkcija ima dva parametra, \texttt{text1} i \texttt{text2}. Povratna vrednost je broj pozicija na kojima se tekstovi razlikuju. Podrazumeva se da je dužina niski jednaka. 
 
 
 \lstinputlisting[language=Python, frame=single]{nedelje/2/kodovi/3.3.HammingDistance.py}
 
 
 \subsubsection{Test primer}
-\noindent\texttt{text} = 'tgactatcatcgtagtatcgatgtgcacacacgtgcgcgcgcgcgccctgtacatgatc' \\\texttt{k} = 5
+\noindent\texttt{text} = 'tgactatcatcgtagtatcgatgtgcacacacgtgcgcgcgcgcgccctgtacatgatc' 
+\\\texttt{k} = 5
 \\\texttt{d} = 2
-\\\texttt{frequent\_patterns} = ....
-
+\\\texttt{frequent\_patterns} = \{'catgc', 'cgtac', 'ctcgc', 'cgaac', 'cgctc', 'cgcat'\}
 
 
 \section{GC-Skew}
@@ -124,6 +138,7 @@ Otvaramo fajl u FASTA formatu koji sadrži nukleotidnu sekvencu. Zanemarujemo pr
 \lstinputlisting[language=Python, frame=single]{nedelje/2/kodovi/4.GC-Skew.py}
 
 \subsection{Calculate Skew}
+\label{calculateSkew}
 
 Funkcija ima jedan parametar, \texttt{text}, koji predstavlja nukleotidnu sekvencu za koju računamo skew. Povratna vrednost je \texttt{skew}.
 
@@ -135,6 +150,8 @@ Skew je inicijalno niz nula, dimenzije datog teksta. Prolazimo sve karaktere tek
 \end{itemize}
 
 \noindent Dobijenu vrednost smeštamo u \texttt{skew} na odgovarajuću poziciju. 
+
+
 
 \subsection{Draw Skew}
 

@@ -1,5 +1,4 @@
 def most_probable_k_mer(dna_string, profile, k):
-    
     best_k_mer = ''
     best_probability = -1
     

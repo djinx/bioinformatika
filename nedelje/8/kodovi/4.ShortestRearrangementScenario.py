@@ -20,14 +20,14 @@ def shortest_rearrangement_scenario(P, Q):
 
 		red_edges.remove((j, i))
 		red_edges.remove((i, j))
-
 		red_edges.remove((i_p, j_p))
 		red_edges.remove((j_p, i_p))
 
 		red_edges.append((j, i_p))
 		red_edges.append((i_p, j))
-
 		red_edges.append((j_p, i))
 		red_edges.append((i, j_p))
 
 		num_of_breaks += 1
+  
+  return num_of_breaks  

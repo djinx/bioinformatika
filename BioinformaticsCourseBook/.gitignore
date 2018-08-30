@@ -1,0 +1,8 @@
+#ignore unnecessary stuff
+*.log
+*.aux 
+*.out
+*.toc
+*.synctex.gz
+*.bbl
+*.blg
